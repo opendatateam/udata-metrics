@@ -13,5 +13,5 @@ pip install udata-metrics
 Then activate it in your `udata.cfg`:
 
 ```python
-PLUGINS = ['udata-metrics']
+PLUGINS = ['metrics']
 ```
