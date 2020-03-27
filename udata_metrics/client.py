@@ -16,3 +16,6 @@ class InfluxClient:
         self.client.write_points([body])
 
 
+def metrics_client_factory():
+    dsn = current_app.config['METRICS_DSN']
+    return InfluxClient(**dsn)
