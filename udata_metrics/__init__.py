@@ -10,7 +10,7 @@ from udata_metrics.client import InfluxClient
 
 
 __version__ = '0.1.0.dev'
-__description__ = 'Connexion handler to metrics service for Udata'
+__description__ = 'Connexion handler to metrics service for udata'
 
 
 def init_app(app):
