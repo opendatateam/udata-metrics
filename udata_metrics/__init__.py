@@ -1,7 +1,7 @@
 '''
 udata-metrics
 
-Connexion handler to metrics service for Udata
+Connexion handler to metrics service for udata
 '''
 
 from flask import _app_ctx_stack
@@ -18,4 +18,3 @@ def init_app(app):
     ctx = _app_ctx_stack.top
     if ctx is not None and not hasattr(ctx, 'influx_db'):
         ctx.influx_db = client
-
