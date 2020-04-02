@@ -14,7 +14,5 @@ __description__ = 'Connexion handler to metrics service for udata'
 
 
 def init_app(app):
-    client = InfluxClient(app.config['METRICS_DSN'])
-    ctx = _app_ctx_stack.top
-    if ctx is not None and not hasattr(ctx, 'influx_db'):
-        ctx.influx_db = client
+    # Do whatever you want to initialize your plugin
+    pass

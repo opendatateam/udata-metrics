@@ -12,18 +12,12 @@ log = logging.getLogger(__name__)
 
 @on_site_metrics.connect
 def site_metrics_send(document, **kwargs):
-    write_object_metrics.delay(
-        metrics_client_factory(),
-        document.get_metrics()
-    )
+    write_object_metrics.delay(document)
 
 
 @task
-def write_object_metrics(client, metrics):
-    client.insert(metrics_client_factory)
+def write_object_metrics(document):
+    client = metrics_client_factory()
+    metrics = document.get_metrics()
+    client.insert(metrics)
 
-
-@job('metrics-test-job')
-def my_job(self):
-    # Implement you first job here
-    log.info('Currently working')
