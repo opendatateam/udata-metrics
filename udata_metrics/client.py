@@ -11,6 +11,21 @@ class InfluxClient:
         query = 'select sum(*) from dataset_views group by dataset;'
         result = self.client.query(query)
         return result
+    
+    def get_views_from_all_reuses(self):
+        query = 'select sum(*) from reuse_views group by reuse;'
+        result = self.client.query(query)
+        return result
+    
+    def get_views_from_all_organizations(self):
+        query = 'select sum(*) from organization_views group by organization;'
+        result = self.client.query(query)
+        return result
+    
+    def get_views_from_all_users(self):
+        query = 'select sum(*) from user_views group by user;'
+        result = self.client.query(query)
+        return result
 
     def insert(self, body):
         self.client.write_points([body])

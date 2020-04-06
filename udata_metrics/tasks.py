@@ -20,4 +20,3 @@ def write_object_metrics(document):
     client = metrics_client_factory()
     metrics = document.get_metrics()
     client.insert(metrics)
-
