@@ -55,25 +55,21 @@ setup(
         'test': tests_require,
     },
     entry_points={
-        
-        
-        
-        
         'udata.models': [
-            'metrics = udata-metrics.models',
+            'metrics = udata_metrics.models',
         ],
         
         'udata.tasks': [
-            'metrics = udata-metrics.tasks',
+            'metrics = udata_metrics.tasks',
         ],
         
         'udata.plugins': [
-            'metrics = udata-metrics',
+            'metrics = udata_metrics',
         ],
     },
     license='AGPL',
     zip_safe=False,
-    keywords='udata, harvester, udata-metrics',
+    keywords='udata, udata-metrics',
     classifiers=[
         'Development Status :: 3 - Alpha',
         'Programming Language :: Python',

@@ -1,5 +1,5 @@
 [bumpr]
-file = udata-metrics/__init__.py
+file = udata_metrics/__init__.py
 vcs = git
 commit = true
 tag = true
