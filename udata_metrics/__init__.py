@@ -6,7 +6,7 @@ Connexion handler to metrics service for udata
 
 from flask import _app_ctx_stack
 
-from udata_metrics.client import InfluxClient
+from udata_metrics.client import metrics_client_factory
 
 
 __version__ = '0.1.0.dev'
