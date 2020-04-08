@@ -41,14 +41,15 @@ tests_require = pip('test.pip')
 
 setup(
     name='udata-metrics',
-    version=__import__('udata-metrics').__version__,
-    description=__import__('udata-metrics').__description__,
+    version='0.1.0',
+    description='Metrics for uData',
     long_description=long_description,
     url='https://github.com/opendatateam/udata-metrics',
     author='Open Data Team',
     author_email='contact@opendata.team',
-    packages=find_packages(),
+    packages=['udata_metrics'],
     include_package_data=True,
+    python_requires='>=3.7',
     install_requires=install_requires,
     tests_require=tests_require,
     extras_require={
@@ -69,7 +70,7 @@ setup(
     },
     license='AGPL',
     zip_safe=False,
-    keywords='udata, udata-metrics',
+    keywords='udata metrics',
     classifiers=[
         'Development Status :: 3 - Alpha',
         'Programming Language :: Python',
