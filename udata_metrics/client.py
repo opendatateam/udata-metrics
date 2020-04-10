@@ -12,6 +12,11 @@ class InfluxClient:
         result = self.client.query(query)
         return result
     
+    def get_views_from_all_resources(self):
+        query = 'select sum(*) from resource_views group by dataset;'
+        result = self.client.query(query)
+        return result
+    
     def get_views_from_all_reuses(self):
         query = 'select sum(*) from reuse_views group by reuse;'
         result = self.client.query(query)
