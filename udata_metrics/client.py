@@ -33,4 +33,4 @@ class InfluxClient:
 
 def metrics_client_factory():
     dsn = current_app.config['METRICS_DSN']
-    return InfluxClient(**dsn)
+    return InfluxClient(dsn)
