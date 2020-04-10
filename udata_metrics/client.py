@@ -31,6 +31,11 @@ class InfluxClient:
         query = 'select sum(*) from user_views group by user;'
         result = self.client.query(query)
         return result
+    
+    def get_views_from_specific_model(self, model_name, model_id):
+        query = f"select * from {model_name}_views where {model_name}='{model_id}';"
+        result = self.client.query(query)
+        return result
 
     def insert(self, body):
         self.client.write_points([body])
