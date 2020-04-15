@@ -1,2 +1,2 @@
-udata>=2.0.0.dev
+udata>=2.0.2.dev
 influxdb==5.2.3

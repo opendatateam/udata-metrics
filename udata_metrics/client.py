@@ -13,7 +13,12 @@ class InfluxClient:
         return result
     
     def get_views_from_all_resources(self):
-        query = 'select sum(*) from resource_views group by dataset;'
+        query = 'select sum(*) from resource_views group by resource;'
+        result = self.client.query(query)
+        return result
+    
+    def get_views_from_all_community_resources(self):
+        query = 'select sum(*) from community_resource_views group by communityresource;'
         result = self.client.query(query)
         return result
     
@@ -34,6 +39,16 @@ class InfluxClient:
     
     def get_views_from_specific_model(self, model_name, model_id):
         query = f"select * from {model_name}_views where {model_name}='{model_id}';"
+        result = self.client.query(query)
+        return result
+    
+    def sum_views_from_specific_ressources(self, resource_id):
+        query = f"select sum(*) from resource_views where resource='{resource_id}';"
+        result = self.client.query(query)
+        return result
+    
+    def sum_views_from_specific_com_ressources(self, com_resource_id):
+        query = f"select sum(*) from community_resource_views where communityresource='{com_resource_id}';"
         result = self.client.query(query)
         return result
 
