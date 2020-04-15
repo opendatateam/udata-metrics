@@ -41,8 +41,8 @@ tests_require = pip('test.pip')
 
 setup(
     name='udata-metrics',
-    version=__import__('udata').__version__,
-    description=__import__('udata').__description__,
+    version=__import__('udata_metrics').__version__,
+    description=__import__('udata_metrics').__description__,
     long_description=long_description,
     url='https://github.com/opendatateam/udata-metrics',
     author='Open Data Team',
