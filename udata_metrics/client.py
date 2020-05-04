@@ -33,7 +33,7 @@ class InfluxClient:
         return result
     
     def get_views_from_all_users(self):
-        query = 'select sum(*) from user_views group by user;'
+        query = 'select sum(*) from user_views group by user_view;'
         result = self.client.query(query)
         return result
     
