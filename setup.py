@@ -44,6 +44,7 @@ setup(
     version=__import__('udata_metrics').__version__,
     description=__import__('udata_metrics').__description__,
     long_description=long_description,
+    long_description_content_type='text/markdown',
     url='https://github.com/opendatateam/udata-metrics',
     author='Open Data Team',
     author_email='contact@opendata.team',
