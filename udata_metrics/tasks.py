@@ -1,4 +1,5 @@
 import logging
+import datetime
 
 from udata_metrics.client import InfluxClient
 from udata.models import Dataset
@@ -17,6 +18,12 @@ def site_metrics_send(document, **kwargs):
 
 @task
 def write_object_metrics(document):
+    dt = datetime.datetime.now()
     client = metrics_client_factory()
     metrics = document.get_metrics()
-    client.insert(metrics)
+    body = {
+        'time': dt,
+        'measurement': 'site_metrics',
+        'fields': metrics
+    }
+    client.insert(body)
