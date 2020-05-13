@@ -1,6 +1,6 @@
 # Changelog
 
-## Current (in progress)
+## 1.0.1 (2020-05-13)
 
 - Nothing yet
 
