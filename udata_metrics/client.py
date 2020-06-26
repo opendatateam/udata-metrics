@@ -8,32 +8,32 @@ class InfluxClient:
         self.client = InfluxDBClient(**dsn)
 
     def get_views_from_all_datasets(self):
-        query = 'select sum(*) from dataset_views group by dataset;'
+        query = 'select sum(*) from dataset_views where time > now() - 24h group by dataset;'
         result = self.client.query(query)
         return result
     
     def get_views_from_all_resources(self):
-        query = 'select sum(*) from resource_views group by resource;'
+        query = 'select sum(*) from resource_views where time > now() - 24h group by resource;'
         result = self.client.query(query)
         return result
     
     def get_views_from_all_community_resources(self):
-        query = 'select sum(*) from community_resource_views group by communityresource;'
+        query = 'select sum(*) from community_resource_views where time > now() - 24h group by communityresource;'
         result = self.client.query(query)
         return result
     
     def get_views_from_all_reuses(self):
-        query = 'select sum(*) from reuse_views group by reuse;'
+        query = 'select sum(*) from reuse_views where time > now() - 24h group by reuse;'
         result = self.client.query(query)
         return result
     
     def get_views_from_all_organizations(self):
-        query = 'select sum(*) from organization_views group by organization;'
+        query = 'select sum(*) from organization_views where time > now() - 24h group by organization;'
         result = self.client.query(query)
         return result
     
     def get_views_from_all_users(self):
-        query = 'select sum(*) from user_views group by user_view;'
+        query = 'select sum(*) from user_views where time > now() - 24h group by user_view;'
         result = self.client.query(query)
         return result
     
