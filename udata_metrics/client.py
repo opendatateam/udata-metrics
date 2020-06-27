@@ -37,20 +37,25 @@ class InfluxClient:
         result = self.client.query(query)
         return result
     
-    def get_views_from_specific_model(self, model_name, model_id):
-        query = f"select * from {model_name}_views where {model_name}='{model_id}';"
+    def sum_views_from_specific_model(self, model_name, model_id):
+        query = f"select sum(*) from {model_name}_views where {model_name}='{model_id}';"
         result = self.client.query(query)
-        return result
+        return result.items()[0]
     
-    def sum_views_from_specific_ressources(self, resource_id):
+    def sum_views_from_specific_ressource(self, resource_id):
         query = f"select sum(*) from resource_views where resource='{resource_id}';"
         result = self.client.query(query)
-        return result
+        return result.items()[0]
     
-    def sum_views_from_specific_com_ressources(self, com_resource_id):
+    def sum_views_from_specific_com_ressource(self, com_resource_id):
         query = f"select sum(*) from community_resource_views where communityresource='{com_resource_id}';"
         result = self.client.query(query)
-        return result
+        return result.items()[0]
+    
+    def sum_views_from_specific_user(self, user_id):
+        query = f"select sum(*) from user_views where user_view='{user_id}';"
+        result = self.client.query(query)
+        return result.items()[0]
 
     def insert(self, body):
         self.client.write_points([body])
