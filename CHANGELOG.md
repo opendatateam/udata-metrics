@@ -1,6 +1,6 @@
 # Changelog
 
-## Current (in progress)
+## 1.0.2 (2020-07-01)
 
 - Add time condition in the queries to retrieve only last 24 hours results [#4](https://github.com/opendatateam/udata-metrics/pull/4)
 
