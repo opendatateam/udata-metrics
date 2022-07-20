@@ -2,7 +2,7 @@
 
 ## Current (in progress)
 
-- Nothing yet
+- Replace mongo legacy image in CI [#6](https://github.com/opendatateam/udata-metrics/pull/6)
 
 ## 1.0.2 (2020-07-01)
 
