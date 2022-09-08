@@ -27,3 +27,9 @@ METRICS_INFLUX_DSN = {
 METRICS_VECTOR_BUCKET = "vector-bucket"
 METRICS_AGGREGATION_BUCKET = "agg-bucket"
 ```
+
+Schedule the `aggregate-metrics-last-day` job with the following command:
+```
+udata job schedule aggregate-metrics-last-day "30 5 * * *"
+```
+See [the docs](https://udata.readthedocs.io/en/latest/administrative-tasks/) for more about scheduling tasks.

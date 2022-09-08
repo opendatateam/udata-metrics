@@ -1,11 +1,13 @@
 import logging
 
+from udata.tasks import job
 from udata_metrics.client import metrics_client_factory
 
 log = logging.getLogger(__name__)
 
 
-def aggregate_last_day():
+@job('aggregate-metrics-last-day', route='low.metrics')
+def aggregate_metrics_last_day(self):
     measurements_dict = {
         "reuse": "reuse.reuse_id",
         "resource": "resource.resource_id",
