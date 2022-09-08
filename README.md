@@ -19,17 +19,11 @@ Modify your local configuration file of **udata** (typically, `udata.cfg`) as fo
 
 ```python
 PLUGINS = ['metrics']
-METRICS_DSN = {
-    'host': 'localhost',
-    'port': '8086',
-    'username': 'johndoe',
-    'password': 'youwillneverguess',
-    'database': 'metrics_db'
+METRICS_INFLUX_DSN = {
+    "url": "http://localhost:8086/",
+    "org": "etalab",
+    "token": "...",
 }
-METRICS_INFLUX = {
-    "INFLUX_BUCKET": "vector-bucket"
-    "INFLUX_URL": "http://influxdb:8086/"
-    "INFLUX_ORG": "etalab"
-    "INFLUX_TOKEN": "secrettoken"
-}
+METRICS_VECTOR_BUCKET = "vector-bucket"
+METRICS_AGGREGATION_BUCKET = "agg-bucket"
 ```
