@@ -1,2 +1,2 @@
-udata>=2.0.0
-influxdb-client==1.32.0
+udata==4.0.3.dev0
+influxdb-client==1.26.0
