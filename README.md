@@ -25,7 +25,6 @@ METRICS_INFLUX_DSN = {
     "token": "...",
 }
 METRICS_VECTOR_BUCKET = "vector-bucket"
-METRICS_AGGREGATION_BUCKET = "agg-bucket"
 ```
 
 Schedule the `aggregate-metrics-last-day` job with the following command:

@@ -6,7 +6,7 @@ from influxdb_client import InfluxDBClient
 class InfluxClient:
 
     def __init__(self, dsn):
-        self.client = InfluxDBClient(**dsn)
+        self.client = InfluxDBClient(**dsn, timeout=100_000)
 
     def aggregate_metrics(self, measurement: str):
         """measurement one of reuse.reuse_id, resource.resource_id,
@@ -25,13 +25,12 @@ class InfluxClient:
                     |> group(columns: ["{id_key}", "day"])
                     |> count()
                     |> duplicate(column: "day", as: "_time")
-                    |> map(fn: (r) => ({{_field: "{page_type}", _measurement: "count"}}))
+                    |> map(fn: (r) => ({{r with _field: "{page_type}", _measurement: "count"}}))
                     |> to(
-                        bucket: "{current_app.config['METRICS_AGGREGATION_BUCKET']}",
+                        bucket: "{current_app.config['METRICS_VECTOR_BUCKET']}",
                         host: "{current_app.config['METRICS_INFLUX_DSN']['url']}",
                         org: "{current_app.config['METRICS_INFLUX_DSN']['org']}",
-                        token: "{current_app.config['METRICS_INFLUX_DSN']['token']}",
-                        timeColumn: "_time"
+                        token: "{current_app.config['METRICS_INFLUX_DSN']['token']}"
                     )
                 """
         print(query)
