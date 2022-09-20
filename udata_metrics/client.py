@@ -26,36 +26,35 @@ class InfluxClient:
         log.info(f"Running metrics aggregation for {page_type}")
         id_key = f"{measurement}".split(".")[1]
         # TODO: Replace with right timezone for logs in the query
-        # agg_query = f"""
-        #         import "date"
-        #         from(bucket: "vector-bucket")
-        #             |> range(start: {yesterday}T00:00:00.000Z, stop: {today}T00:00:00.000Z)
-        #             |> filter(fn: (r) => r._measurement == "{measurement}")
-        #             |> map(fn: (r) => ({{r with day: date.truncate(t: r._time, unit: 1d)}}))
-        #             |> group(columns: ["{id_key}", "day"])
-        #             |> count()
-        #             |> duplicate(column: "day", as: "_time")
-        #             |> map(fn: (r) => ({{r with _field: "{page_type}", _measurement: "count"}}))
-        #             |> to(
-        #                 bucket: "{current_app.config['METRICS_VECTOR_BUCKET']}",
-        #                 host: "{current_app.config['METRICS_INFLUX_DSN']['url']}",
-        #                 org: "{current_app.config['METRICS_INFLUX_DSN']['org']}",
-        #                 token: "{current_app.config['METRICS_INFLUX_DSN']['token']}"
-        #             )
-        #         """
-        # self.client.query_api().query(agg_query)
-        # self.client.delete_api().delete(
-        #     start=f"{yesterday}T00:00:00.000Z",
-        #     stop=f"{today}T00:00:00.000Z",
-        #     predicate=f"_measurement=\"{measurement}\"",
-        #     bucket=current_app.config['METRICS_VECTOR_BUCKET'],
-        #     org=current_app.config['METRICS_INFLUX_DSN']['org']
-        # )
+        agg_query = f"""
+                import "date"
+                from(bucket: "vector-bucket")
+                    |> range(start: {yesterday}T00:00:00.000Z, stop: {today}T00:00:00.000Z)
+                    |> filter(fn: (r) => r._measurement == "{measurement}")
+                    |> map(fn: (r) => ({{r with day: date.truncate(t: r._time, unit: 1d)}}))
+                    |> group(columns: ["{id_key}", "day"])
+                    |> count()
+                    |> duplicate(column: "day", as: "_time")
+                    |> map(fn: (r) => ({{r with _field: "{page_type}", _measurement: "count"}}))
+                    |> to(
+                        bucket: "{current_app.config['METRICS_VECTOR_BUCKET']}",
+                        host: "{current_app.config['METRICS_INFLUX_DSN']['url']}",
+                        org: "{current_app.config['METRICS_INFLUX_DSN']['org']}",
+                        token: "{current_app.config['METRICS_INFLUX_DSN']['token']}"
+                    )
+                """
+        self.client.query_api().query(agg_query)
+        self.client.delete_api().delete(
+            start=f"{yesterday}T00:00:00.000Z",
+            stop=f"{today}T00:00:00.000Z",
+            predicate=f"_measurement=\"{measurement}\"",
+            bucket=current_app.config['METRICS_VECTOR_BUCKET'],
+            org=current_app.config['METRICS_INFLUX_DSN']['org']
+        )
 
-        # |> range(start: {yesterday}T00:00:00.000Z, stop: {today}T00:00:00.000Z)
         retrieve_metrics_query = f"""
             from(bucket: "vector-bucket")
-                |> range(start: 0, stop: 2022-06-03T00:00:00.000Z)
+                |> range(start: 0, stop: {today}T00:00:00.000Z)
                 |> filter(fn: (r) => (r._field == "{page_type}") and (r._measurement == "count"))
                 |> group(columns: ["{id_key}"])
                 |> sum()
