@@ -63,7 +63,7 @@ class InfluxClient:
         result = self.client.query_api().query(retrieve_metrics_query)
         for table in result:
             for record in table:
-                # TODO: Handle resource hits case
+                # Currently we ignore resource hits as they are different from resource downloads.
                 if page_type == "resource_hit":
                     continue
                 elif page_type == "resource":
