@@ -58,7 +58,7 @@ class InfluxClient:
                 |> filter(fn: (r) => (r._field == "{page_type}") and (r._measurement == "count"))
                 |> group(columns: ["{id_key}"])
                 |> sum()
-                |> yield(name: "daily-views-{page_type}")
+                |> yield(name: "views-{page_type}")
         """
         result = self.client.query_api().query(retrieve_metrics_query)
         for table in result:
