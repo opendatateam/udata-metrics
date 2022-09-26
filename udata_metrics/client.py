@@ -83,7 +83,7 @@ class InfluxClient:
                     }[page_type]
 
                     model_id = record[id_key]
-                    model_result = model.objects.filter(id=model_id).first()
+                    model_result = model.get(model_id)
 
                 if model_result:
                     log.debug(f"Found {page_type} {model_result.id}")
