@@ -15,6 +15,6 @@ def aggregate_metrics_last_day(self):
         "organization": "organization.organization_id",
         "resource_hit": "resource_hit.resource_id",
     }
+    client = metrics_client_factory()
     for _, measurement in measurements_dict.items():
-        client = metrics_client_factory()
         client.aggregate_metrics(measurement)

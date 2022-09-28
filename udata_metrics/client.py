@@ -15,16 +15,15 @@ class InfluxClient:
         self.client = InfluxDBClient(**dsn, timeout=600_000)
 
     def aggregate_metrics(self, measurement: str):
-        """measurement one of reuse.reuse_id, resource.resource_id,
+        """measurement is one of reuse.reuse_id, resource.resource_id,
         dataset.dataset_id, organization.organization_id,
         resource_hit.resource_id"""
         today_dt = datetime.now()
         yesterday_dt = today_dt - timedelta(days=1)
         today = today_dt.strftime("%Y-%m-%d")
         yesterday = yesterday_dt.strftime("%Y-%m-%d")
-        page_type = f"{measurement}".split(".")[0]
+        page_type, id_key = f"{measurement}".split(".")
         log.info(f"Running metrics aggregation for {page_type}")
-        id_key = f"{measurement}".split(".")[1]
         # TODO: Replace with right timezone for logs in the query
         agg_query = f"""
                 import "date"
