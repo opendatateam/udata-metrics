@@ -1,13 +1,19 @@
 import logging
 from datetime import date, timedelta
-import uuid
 from flask import current_app
 from influxdb_client import InfluxDBClient
 
-from udata.core.dataset.models import Dataset, get_resource
+from udata.core.dataset.models import Dataset
 from udata.models import Reuse, Organization
 
 log = logging.getLogger(__name__)
+
+
+model_mapping = {
+    'dataset': Dataset,
+    'reuse': Reuse,
+    'organization': Organization
+}
 
 
 class InfluxClient:
@@ -26,8 +32,6 @@ class InfluxClient:
         Run an influx query to compute and store aggregated metrics.
         Sum the number of entries per object for the previous day in influxdb.
         '''
-        log.info(f'Running metrics aggregation for {page_type}')
-
         agg_query = f"""
             import "date"
             from(bucket: "{current_app.config['METRICS_VECTOR_BUCKET']}")
@@ -79,43 +83,40 @@ class InfluxClient:
         Update aggregated metrics in udata models for all objects of page_type
         '''
         results = self.retrieve_aggregated_metrics(page_type, id_key)
-        for result in results:
-            for table in result:
-                for record in table:
-                    # Currently we ignore resource hits and compute resource downloads only
-                    if page_type == 'resource_hit':
+        ids_to_views = {record[id_key]: record['_value'] for table in results for record in table}
+
+        if page_type == 'resource_hit':
+            # We currently ignore resource hits and compute resource downloads only
+            return
+        if page_type == 'resource':
+            # Iterating on datasets objects to save datasets with multiple resources
+            # only once for performance reason.
+            for dataset in Dataset.objects(resources__id__in=ids_to_views.keys()).no_cache().all():
+                for res in dataset.resources:
+                    if str(res.id) in ids_to_views:
+                        res.metrics["views"] = ids_to_views[str(res.id)]
+                try:
+                    dataset.save(signal_kwargs={"ignores": ["post_save"]})
+                except Exception as e:
+                    log.exception(e)
+                    continue
+        elif page_type in model_mapping:
+            model = model_mapping[page_type]
+
+            for id in ids_to_views:
+                model_result = model.objects(id=id).first()
+                if model_result:
+                    log.debug(f'Found {page_type} {model_result.id}')
+                    model_result.metrics['views'] = ids_to_views[id]
+                    try:
+                        model_result.save(signal_kwargs={'ignores': ['post_save']})
+                    except Exception as e:
+                        log.exception(e)
                         continue
-                    elif page_type == 'resource':
-                        # Since resource is not a model per se but part of the dataset model, we
-                        # need to treat it separately.
-                        try:
-                            model_id = uuid.UUID(record[id_key])
-                            model_result = get_resource(model_id)
-                        except Exception as e:
-                            log.exception(e)
-                            continue
-                    else:
-                        model = {
-                            'dataset': Dataset,
-                            'reuse': Reuse,
-                            'organization': Organization
-                        }[page_type]
-
-                        model_id = record[id_key]
-                        model_result = model.get(model_id)
-
-                    if model_result:
-                        log.debug(f'Found {page_type} {model_result.id}')
-                        model_result.metrics['views'] = record['_value']
-                        try:
-                            model_result.save(signal_kwargs={'ignores': ['post_save']})
-                        except Exception as e:
-                            log.exception(e)
-                            continue
-                    else:
-                        log.error(f'{page_type} not found', extra={
-                            'id': model_id
-                        })
+                else:
+                    log.error(f'{page_type} not found', extra={'id': id})
+        else:
+            log.error(f'unexpected page_type: {page_type}')
 
     def aggregate_metrics(self, measurement: str):
         """
@@ -125,7 +126,10 @@ class InfluxClient:
         measurement is one of reuse.reuse_id, resource.resource_id,
         dataset.dataset_id, organization.organization_id,
         resource_hit.resource_id"""
+
         page_type, id_key = f'{measurement}'.split('.')
+
+        log.info(f'Running metrics aggregation for {page_type}')
 
         self.compute_aggregated_metrics(page_type, measurement, id_key)
         self.delete_metrics_point(measurement)
