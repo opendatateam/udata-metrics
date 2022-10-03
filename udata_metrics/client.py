@@ -132,7 +132,7 @@ class InfluxClient:
         log.info(f'Running metrics aggregation for {page_type}')
 
         self.compute_aggregated_metrics(page_type, measurement, id_key)
-        self.delete_metrics_point(measurement)
+        self.delete_metrics_points(measurement)
         self.update_aggregated_metrics_in_udata_models(page_type, id_key)
 
 
