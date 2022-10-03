@@ -5,12 +5,16 @@ from udata.utils import faker
 
 
 def mock_query_aggregated_results(id_key, views):
-    return [[[{id_key: str(id), '_value': views[id]} for id in views]]]
+    return [[{id_key: str(id), '_value': views[id]} for id in views]]
 
 
 def test_metrics_dataset_update(app, client, mocker):
     datasets = [DatasetFactory(metrics={}) for _ in range(8)]
-    views = {dat.id: faker.pyint() for dat in datasets}
+
+    # Only the 4 first objects have aggregated views metrics computed
+    views = {dat.id: faker.pyint() for dat in datasets[:4]}
+    # Add a view metric for an unknown object
+    views.update({'626bccb9697a12204fb22ea3': faker.pyint()})
 
     m = mocker.patch('udata_metrics.client.InfluxClient.retrieve_aggregated_metrics')
     m.return_value = mock_query_aggregated_results('dataset_id', views)
@@ -18,12 +22,19 @@ def test_metrics_dataset_update(app, client, mocker):
     client.update_aggregated_metrics_in_udata_models('dataset', 'dataset_id')
     for dat in datasets:
         dat.reload()
-        assert dat.metrics['views'] == views[dat.id]
+        if dat.id in views:
+            assert dat.metrics['views'] == views[dat.id]
+        else:
+            assert 'views' not in dat.metrics
 
 
 def test_metrics_reuse_update(app, client, mocker):
     reuses = [ReuseFactory(metrics={}) for _ in range(8)]
-    views = {reuse.id: faker.pyint() for reuse in reuses}
+
+    # Only the 4 first objects have aggregated views metrics computed
+    views = {reuse.id: faker.pyint() for reuse in reuses[:4]}
+    # Add a view metric for an unknown object
+    views.update({'626bccb9697a12204fb22ea3': faker.pyint()})
 
     m = mocker.patch('udata_metrics.client.InfluxClient.retrieve_aggregated_metrics')
     m.return_value = mock_query_aggregated_results('reuse_id', views)
@@ -31,12 +42,19 @@ def test_metrics_reuse_update(app, client, mocker):
     client.update_aggregated_metrics_in_udata_models('reuse', 'reuse_id')
     for reuse in reuses:
         reuse.reload()
-        assert reuse.metrics['views'] == views[reuse.id]
+        if reuse.id in views:
+            assert reuse.metrics['views'] == views[reuse.id]
+        else:
+            assert 'views' not in reuse.metrics
 
 
 def test_metrics_organization_update(app, client, mocker):
     organizations = [OrganizationFactory(metrics={}) for _ in range(8)]
-    views = {org.id: faker.pyint() for org in organizations}
+
+    # Only the 4 first objects have aggregated views metrics computed
+    views = {org.id: faker.pyint() for org in organizations[:4]}
+    # Add a view metric for an unknown object
+    views.update({'626bccb9697a12204fb22ea3': faker.pyint()})
 
     m = mocker.patch('udata_metrics.client.InfluxClient.retrieve_aggregated_metrics')
     m.return_value = mock_query_aggregated_results('organization_id', views)
@@ -44,13 +62,22 @@ def test_metrics_organization_update(app, client, mocker):
     client.update_aggregated_metrics_in_udata_models('organization', 'organization_id')
     for org in organizations:
         org.reload()
-        assert org.metrics['views'] == views[org.id]
+        if org.id in views:
+            assert org.metrics['views'] == views[org.id]
+        else:
+            assert 'views' not in org.metrics
 
 
 def test_metrics_resource_update(app, client, mocker):
     resources = [ResourceFactory(metrics={}) for _ in range(8)]
-    datasets = [DatasetFactory(resources=resources[:4]), DatasetFactory(resources=resources[4:])]
-    views = {res.id: faker.pyint() for res in resources}
+    datasets = [DatasetFactory(resources=resources[:3]),
+                DatasetFactory(resources=resources[3:6]),
+                DatasetFactory(resources=resources[6:])]
+
+    # Only the 4 first objects have aggregated views metrics computed
+    views = {res.id: faker.pyint() for res in resources[:4]}
+    # Add a view metric for an unknown object
+    views.update({faker.uuid4(): faker.pyint()})
 
     m = mocker.patch('udata_metrics.client.InfluxClient.retrieve_aggregated_metrics')
     m.return_value = mock_query_aggregated_results('resource_id', views)
@@ -60,4 +87,7 @@ def test_metrics_resource_update(app, client, mocker):
     for dat in datasets:
         dat.reload()
         for res in dat.resources:
-            assert res.metrics['views'] == views[res.id]
+            if res.id in views:
+                assert res.metrics['views'] == views[res.id]
+            else:
+                assert 'views' not in res.metrics
