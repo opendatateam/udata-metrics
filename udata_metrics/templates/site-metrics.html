@@ -1,24 +1,6 @@
-{% extends theme('layouts/1-column.html') %}
-{% from theme('macros/breadcrumb.html') import breadcrumb with context %}
 {% from theme('macros/banner_info.html') import banner_info %}
 {% from theme('macros/metrics.html') import metrics %}
 
-{% set meta = {
-    'title': _('Dashboard'),
-    'description': _('Site metrics and activity'),
-    'keywords': [_('metrics'), _('activity')],
-} %}
-
-{% block breadcrumb %}
-<li>
-    <a class="fr-breadcrumb__link" aria-current="page">
-        {{ _('Metrics') }}
-    </a>
-</li>
-{% endblock %}
-
-{% block content %}
-{{ breadcrumb(self) }}
 <section class="fr-container fr-mb-16w vuejs">
     <div class="fr-grid-row fr-grid-row--gutters justify-between">
         <div class="fr-col">
@@ -86,4 +68,3 @@
         </div>
     </section>
 </section>
-{% endblock %}

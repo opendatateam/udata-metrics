@@ -79,12 +79,12 @@ def organization_metrics(ctx):
                         )
 
 
-@blueprint.route('/dashboard/')
-def site_metrics_dashboard():
+@template_hook('site.display.metrics')
+def site_metrics(ctx):
     visit_dataset_metrics, outlink_metrics = get_metrics_for_model(
         'site', None, ['visit_dataset', 'outlink'])
 
-    return theme.render('dashboard.html',
+    return theme.render('site-metrics.html',
                         update_date=Dataset.objects.filter(badges__kind='spd'),
                         recent_datasets=Dataset.objects.visible(),
                         recent_reuses=Reuse.objects(featured=True).visible(),
