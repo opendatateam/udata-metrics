@@ -83,28 +83,12 @@ jobs:
           name: Publish on PyPI
           command: twine upload --username "${PYPI_USERNAME}" --password "${PYPI_PASSWORD}" dist/*.whl
 
-  github:
-    docker:
-      - image: udata/circleci:2-alpine
-    environment:
-        BASH_ENV: /root/.bashrc
-    steps:
-      - attach_workspace:
-          at: .
-      - run:
-          name: Upload github release
-          command: gh_release
-
 workflows:
   version: 2
   build:
     jobs:
       - build:
           filters:
-            branches:
-              only:
-                - master
-                - /[0-9]+(\.[0-9]+)+/
             tags:
               only: /v[0-9]+(\.[0-9]+)*/
       - publish:

@@ -64,7 +64,7 @@ def test(ctx, report=False):
 @task
 def cover(ctx, html=False):
     '''Run tests suite with coverage'''
-    cmd = 'pytest --cov udata-metrics --cov-report term'
+    cmd = 'pytest --cov udata_metrics --cov-report term'
     if html:
         cmd = ' '.join((cmd, '--cov-report html:reports/cover'))
     with ctx.cd(ROOT):
@@ -77,7 +77,7 @@ def qa(ctx):
     header(qa.__doc__)
     with ctx.cd(ROOT):
         info('Python Static Analysis')
-        flake8_results = ctx.run('flake8 udata-metrics', pty=True, warn=True)
+        flake8_results = ctx.run('flake8 udata_metrics', pty=True, warn=True)
         if flake8_results.failed:
             error('There is some lints to fix')
         else:
