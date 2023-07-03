@@ -57,17 +57,9 @@ setup(
         'test': tests_require,
     },
     entry_points={
-        'udata.models': [
-            'metrics = udata_metrics.models',
-        ],
-        
-        'udata.tasks': [
-            'metrics = udata_metrics.tasks',
-        ],
-        
-        'udata.plugins': [
-            'metrics = udata_metrics',
-        ],
+        'udata.views': [
+            'metrics = udata_metrics.views',
+        ]
     },
     license='AGPL',
     zip_safe=False,
