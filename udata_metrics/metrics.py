@@ -19,7 +19,7 @@ METRICS_CACHE_DURATION = 60 * 60  # in seconds
 
 
 def monthly_labels():
-    return [month.strftime("%Y-%m") for month in rrule(
+    return [month.strftime('%Y-%m') for month in rrule(
             MONTHLY,
             dtstart=date.today() - timedelta(days=365),
             until=date.today()
@@ -58,14 +58,12 @@ def get_metrics_for_model(
     Get distant metrics for a particular model object
     This uses @cache.cached decorator w/ short lived cache
     '''
-    if not current_app.config["METRICS_API"]:
+    if not current_app.config['METRICS_API']:
         # TODO: How to best deal with no METRICS_API, prevent calling or return empty?
         # raise ValueError("missing config METRICS_API to use this function")
         return [{} for _ in range(len(metrics_labels))]
-    model_metrics_api = f'{current_app.config["METRICS_API"]}/{model}'
-    if id:
-        # TODO: not clean of a hack
-        model_metrics_api += 's'
+    models = model + 's' if id else model  # TODO: not clean of a hack
+    model_metrics_api = f'{current_app.config["METRICS_API"]}/{models}/data/'
     try:
         params = {
             'metric_month__sort': 'desc'
@@ -74,7 +72,7 @@ def get_metrics_for_model(
             params[f'{model}_id__exact'] = id
         res = requests.get(model_metrics_api, params)
         res.raise_for_status()
-        monthly_metrics = compute_monthly_metrics(res.json(), metrics_labels)
+        monthly_metrics = compute_monthly_metrics(res.json()['data'], metrics_labels)
         return metrics_by_label(monthly_metrics, metrics_labels)
     except requests.exceptions.RequestException as e:
         log.exception(f'Error while getting metrics for {model}({id}): {e}')

@@ -14,7 +14,7 @@ blueprint = I18nBlueprint('metrics', __name__, template_folder='templates')
 @template_hook('dataset.display.metrics')
 def dataset_metrics(ctx):
 
-    dataset = ctx["dataset"]
+    dataset = ctx['dataset']
 
     visit_metrics, = get_metrics_for_model('dataset', dataset.id, ['visit'])
     reuses_metrics = get_stock_metrics(
@@ -33,7 +33,7 @@ def dataset_metrics(ctx):
 @template_hook('reuse.display.metrics')
 def reuse_metrics(ctx):
 
-    reuse = ctx["reuse"]
+    reuse = ctx['reuse']
     visit_metrics, outlink_metrics = get_metrics_for_model(
         'reuse', reuse.id, ['visit', 'outlink'])
     followers_metrics = get_stock_metrics(Follow.objects(following=reuse), date_label='since')
@@ -48,7 +48,7 @@ def reuse_metrics(ctx):
 
 @template_hook('organization.display.metrics')
 def organization_metrics(ctx):
-    org = ctx["org"]
+    org = ctx['org']
 
     dataset_visit_metrics, reuse_visit_metrics, outlink_metrics = get_metrics_for_model(
         'organization', org.id, ['visit_dataset', 'visit_reuse', 'outlink'])
