@@ -2,12 +2,12 @@
 
 <section class="fr-pb-15v vuejs">
     <h2 class="subtitle subtitle--uppercase">{{ _('General statistics') }}</h2>
-    <div class="fr-grid-row justify-between">
+    <div class="fr-grid-row fr-grid-row--gutters">
         {{metrics(_("Datasets"), org.metrics.datasets, dataset_metrics, type="bar", highlight_direction=True, as_percentage=True)}}
         {{metrics(_("Reuses"), org.metrics.reuses, reuse_metrics, type="bar", highlight_direction=True, as_percentage=True)}}
     </div>
     <h2 class="subtitle subtitle--uppercase fr-pt-10v">{{ _('Datasets statistics') }}</h2>
-    <div class="fr-grid-row justify-between">
+    <div class="fr-grid-row fr-grid-row--gutters">
         {% if dataset_visit_metrics %}
             {{metrics(_("Views"), dataset_visit_metrics.values()|sum, dataset_visit_metrics, type="line", highlight_direction=True, as_percentage=True)}}
         {% endif %}
@@ -15,7 +15,7 @@
         {{metrics(_("Followers"), dataset_follower_metrics.values()|sum, dataset_follower_metrics, type="bar", highlight_direction=True, as_percentage=True)}}
     </div>
     <h2 class="subtitle subtitle--uppercase fr-pt-10v">{{ _('Reuses statistics') }}</h2>
-    <div class="fr-grid-row justify-between">
+    <div class="fr-grid-row fr-grid-row--gutters">
         {% if reuse_visit_metrics %}
             {{metrics(_("Views"), reuse_visit_metrics.values()|sum, reuse_visit_metrics, type="line", highlight_direction=True, as_percentage=True)}}
         {% endif %}

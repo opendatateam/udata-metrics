@@ -2,7 +2,7 @@
 
 <section class="fr-pb-3w fr-mb-3w border-bottom border-default-grey vuejs">
     <h2 class="subtitle subtitle--uppercase">{{ _('Metrics') }}</h2>
-    <div class="fr-grid-row justify-between">
+    <div class="fr-grid-row fr-grid-row--gutters">
         {% if visit_metrics %}
             {{metrics(_("Views"), visit_metrics.values()|sum, visit_metrics, type="line", highlight_direction=True, as_percentage=True)}}
         {% endif %}

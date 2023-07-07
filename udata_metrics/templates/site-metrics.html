@@ -2,7 +2,7 @@
 {% from theme('macros/metrics.html') import metrics %}
 
 <section class="fr-container fr-mb-16w vuejs">
-    <div class="fr-grid-row fr-grid-row--gutters justify-between">
+    <div class="fr-grid-row fr-grid-row--gutters fr-grid-row--gutters">
         <div class="fr-col">
             <h1 class="fr-h3">{{ _("Metrics") }}</h1>
         </div>
@@ -21,7 +21,7 @@
         <h2 class="fr-mt-6w">
             {{_("Audience")}}
         </h2>
-        <div class="fr-grid-row justify-between">
+        <div class="fr-grid-row fr-grid-row--gutters">
             {{metrics(_("Users"), current_site.metrics['users'], user_metrics)}}
             {% if visit_dataset_metrics %}
             {{metrics(_("Dataset visits"), visit_dataset_metrics.values()|sum, visit_dataset_metrics, type="line", highlight_direction=True, as_percentage=True)}}
@@ -35,7 +35,7 @@
         <h2 class="fr-mt-6w">
             {{_("Catalog")}}
         </h2>
-        <div class="fr-grid-row justify-between">
+        <div class="fr-grid-row fr-grid-row--gutters">
             {{metrics(_("Datasets"), current_site.metrics['datasets'], dataset_metrics, highlight_direction=True)}}
             {% if TODO %}
             {{metrics(_("Files"), 236400, [233400, 236400], highlight_direction=True)}}
@@ -47,7 +47,7 @@
         <h2 class="fr-mt-6w">
             {{_("Data usage")}}
         </h2>
-        <div class="fr-grid-row justify-between">
+        <div class="fr-grid-row fr-grid-row--gutters">
             {% if TODO %}
             {{metrics(_("Downloads"), 175800, [145289, 175800], type="line", highlight_direction=True, as_percentage=True)}}
             {{metrics(_("Exploration"), 5300, [2663, 5300], type="line", highlight_direction=True, as_percentage=True)}}
@@ -59,7 +59,7 @@
         <h2 class="fr-mt-6w">
             {{_("Community")}}
         </h2>
-        <div class="fr-grid-row justify-between">
+        <div class="fr-grid-row fr-grid-row--gutters">
             {{metrics(_("Organizations"), current_site.metrics['organizations'], organization_metrics, highlight_direction=True)}}
             {{metrics(_("Discussions"), current_site.metrics['discussions'], discussion_metrics, highlight_direction=True)}}
             {% if outlink_metrics %}
