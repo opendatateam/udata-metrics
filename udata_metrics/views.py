@@ -16,8 +16,8 @@ def dataset_metrics(ctx):
 
     dataset = ctx['dataset']
 
-    visit_metrics, resource_visit_metrics = get_metrics_for_model(
-        'dataset', dataset.id, ['visit', 'resource_visit'])
+    visit, visit_resource = get_metrics_for_model(
+        'dataset', dataset.id, ['visit', 'visit_resource'])
     reuses_metrics = get_stock_metrics(
         Reuse.objects(datasets=dataset).visible())
     followers_metrics = get_stock_metrics(Follow.objects(following=dataset),
@@ -25,8 +25,8 @@ def dataset_metrics(ctx):
 
     return theme.render('dataset-metrics.html',
                         dataset=dataset,
-                        visit_metrics=visit_metrics,
-                        resource_visit_metrics=resource_visit_metrics,
+                        visit=visit,
+                        visit_resource=visit_resource,
                         reuses_metrics=reuses_metrics,
                         followers_metrics=followers_metrics
                         )
@@ -36,13 +36,13 @@ def dataset_metrics(ctx):
 def reuse_metrics(ctx):
 
     reuse = ctx['reuse']
-    visit_metrics, outlink_metrics = get_metrics_for_model(
+    visit, outlink_metrics = get_metrics_for_model(
         'reuse', reuse.id, ['visit', 'outlink'])
     followers_metrics = get_stock_metrics(Follow.objects(following=reuse), date_label='since')
 
     return theme.render('reuse-metrics.html',
                         reuse=reuse,
-                        visit_metrics=visit_metrics,
+                        visit=visit,
                         outlink_metrics=outlink_metrics,
                         followers_metrics=followers_metrics
                         )
@@ -51,9 +51,8 @@ def reuse_metrics(ctx):
 @template_hook('organization.display.metrics')
 def organization_metrics(ctx):
     org = ctx['org']
-
-    dataset_visit_metrics, reuse_visit_metrics, outlink_metrics = get_metrics_for_model(
-        'organization', org.id, ['visit_dataset', 'visit_reuse', 'outlink'])
+    visit_dataset, visit_resource, visit_reuse, outlink_metrics = get_metrics_for_model(
+        'organization', org.id, ['visit_dataset', 'visit_resource', 'visit_reuse', 'outlink'])
     dataset_metrics = get_stock_metrics(
         Dataset.objects(organization=org).visible(),
         date_label='created_at_internal')
@@ -70,8 +69,9 @@ def organization_metrics(ctx):
 
     return theme.render('organization-metrics.html',
                         org=org,
-                        dataset_visit_metrics=dataset_visit_metrics,
-                        reuse_visit_metrics=reuse_visit_metrics,
+                        visit_dataset=visit_dataset,
+                        visit_resource=visit_resource,
+                        visit_reuse=visit_reuse,
                         outlink_metrics=outlink_metrics,
                         dataset_metrics=dataset_metrics,
                         reuse_metrics=reuse_metrics,
@@ -83,7 +83,7 @@ def organization_metrics(ctx):
 
 @template_hook('site.display.metrics')
 def site_metrics(ctx):
-    visit_dataset_metrics, visit_resource_metrics, outlink_metrics = get_metrics_for_model(
+    visit_dataset, visit_resource, outlink_metrics = get_metrics_for_model(
         'site', None, ['visit_dataset', 'visit_resource', 'outlink'])
 
     return theme.render('site-metrics.html',
@@ -99,7 +99,7 @@ def site_metrics(ctx):
                         organization_metrics=get_stock_metrics(Organization.objects().visible()),
                         discussion_metrics=get_stock_metrics(Discussion.objects(),
                                                              date_label='created'),
-                        visit_dataset_metrics=visit_dataset_metrics,
-                        visit_resource_metrics=visit_resource_metrics,
+                        visit_dataset=visit_dataset,
+                        visit_resource=visit_resource,
                         outlink_metrics=outlink_metrics
                         )

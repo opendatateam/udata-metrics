@@ -23,11 +23,11 @@
         </h2>
         <div class="fr-grid-row fr-grid-row--gutters">
             {{metrics(_("Users"), current_site.metrics['users'], user_metrics)}}
-            {% if visit_dataset_metrics %}
-            {{metrics(_("Dataset visits"), visit_dataset_metrics.values()|sum, visit_dataset_metrics, type="line", highlight_direction=True, as_percentage=True)}}
+            {% if visit_dataset %}
+            {{metrics(_("Dataset visits"), visit_dataset.values()|sum, visit_dataset, type="line", highlight_direction=True, as_percentage=True)}}
             {% endif %}
-            {% if visit_resource_metrics %}
-            {{metrics(_("Resource downloads"), visit_resource_metrics.values()|sum, visit_resource_metrics, type="line", highlight_direction=True, as_percentage=True)}}
+            {% if visit_resource %}
+            {{metrics(_("Resource downloads"), visit_resource.values()|sum, visit_resource, type="line", highlight_direction=True, as_percentage=True)}}
             {% endif %}
         </div>
     </section>
