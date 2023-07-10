@@ -6,6 +6,9 @@
         {% if visit_metrics %}
             {{metrics(_("Views"), visit_metrics.values()|sum, visit_metrics, type="line", highlight_direction=True, as_percentage=True)}}
         {% endif %}
+        {% if resource_visit_metrics %}
+            {{metrics(_("Downloads"), resource_visit_metrics.values()|sum, resource_visit_metrics, type="line", highlight_direction=True, as_percentage=True)}}
+        {% endif %}
         {{metrics(_("Reuses of this dataset"), dataset.metrics.reuses, reuses_metrics, type="bar", highlight_direction=True, as_percentage=True)}}
         {{metrics(_("Followers"), dataset.metrics.followers, followers_metrics, type="bar", highlight_direction=True, as_percentage=True)}}
     </

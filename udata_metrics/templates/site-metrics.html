@@ -26,8 +26,8 @@
             {% if visit_dataset_metrics %}
             {{metrics(_("Dataset visits"), visit_dataset_metrics.values()|sum, visit_dataset_metrics, type="line", highlight_direction=True, as_percentage=True)}}
             {% endif %}
-            {% if TODO %}
-            {{metrics(_("Search"), 65900, [61018, 65900], type="line", highlight_direction=True, as_percentage=True)}}
+            {% if visit_resource_metrics %}
+            {{metrics(_("Resource downloads"), visit_resource_metrics.values()|sum, visit_resource_metrics, type="line", highlight_direction=True, as_percentage=True)}}
             {% endif %}
         </div>
     </section>
