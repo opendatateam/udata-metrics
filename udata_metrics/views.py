@@ -16,7 +16,8 @@ def dataset_metrics(ctx):
 
     dataset = ctx['dataset']
 
-    visit_metrics, resource_visit_metrics = get_metrics_for_model('dataset', dataset.id, ['visit', 'resource_visit'])
+    visit_metrics, resource_visit_metrics = get_metrics_for_model(
+        'dataset', dataset.id, ['visit', 'resource_visit'])
     reuses_metrics = get_stock_metrics(
         Reuse.objects(datasets=dataset).visible())
     followers_metrics = get_stock_metrics(Follow.objects(following=dataset),
