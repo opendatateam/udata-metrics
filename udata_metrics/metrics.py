@@ -2,7 +2,6 @@ from collections import OrderedDict
 from datetime import date, datetime, timedelta
 import logging
 import requests
-import tqdm
 from typing import Union, List, Dict
 
 from bson import ObjectId
@@ -167,7 +166,7 @@ def process_metrics_result(target_endpoint: str,
     '''
     log.info(f'Processing model {model}')
     start = datetime.now()
-    for data in tqdm.tqdm(iterate_on_metrics(target_endpoint, value_key)):
+    for data in iterate_on_metrics(target_endpoint, value_key):
         if model.__name__ == 'Resource':
             # Specific case for resource:
             # - it could either be a Dataset Resource embedded document or a CommunityResource
