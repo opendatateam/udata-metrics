@@ -4,18 +4,15 @@ import logging
 import requests
 import tqdm
 from typing import Union, List, Dict
-from uuid import UUID
 
 from bson import ObjectId
 from dateutil.rrule import rrule, MONTHLY
 from flask import current_app
 from pymongo.command_cursor import CommandCursor
 from mongoengine import QuerySet
-from werkzeug.exceptions import NotFound
 
 from udata.app import cache
-from udata.core.dataset.models import get_resource
-from udata.models import db
+from udata.models import db, CommunityResource, Dataset
 
 
 log = logging.getLogger(__name__)
@@ -125,7 +122,24 @@ def get_stock_metrics(objects: QuerySet, date_label: str = 'created_at') -> List
     return compute_monthly_aggregated_metrics(aggregation_res)
 
 
-def iterate_on_metrics(target: str, value_key: str):
+def save_model(model: db.Document, model_id: str, value: int) -> None:
+    model_result = model.objects.filter(id=model_id).first()
+    if not model_result:
+        log.debug(f'{model.__name__} not found', extra={
+            'id': model_id
+        })
+        return
+    if model_result.metrics.get('views', 0) == value:
+        # Metric hasn't changed, skip update (useful for objects that are slow when saving)
+        return
+    model_result.metrics['views'] = value
+    try:
+        model_result.save(signal_kwargs={'ignores': ['post_save']})
+    except Exception as e:
+        log.exception(e)
+
+
+def iterate_on_metrics(target: str, value_key: str) -> dict:
     '''
     paginate on target endpoint
     '''
@@ -147,27 +161,23 @@ def iterate_on_metrics(target: str, value_key: str):
 def process_metrics_result(target_endpoint: str,
                            model: db.Document,
                            id_key: str,
-                           value_key: str = 'visit'):
+                           value_key: str = 'visit') -> None:
+    '''
+    Fetch metrics and update udata objects with the total metrics count
+    '''
     log.info(f'Processing model {model}')
+    start = datetime.now()
     for data in tqdm.tqdm(iterate_on_metrics(target_endpoint, value_key)):
-        try:
-            if model.__name__ == 'Resource':
-                model_result = get_resource(UUID(data[id_key]))
-                if not model_result:
-                    raise NotFound()
-            else:
-                model_result = model.get(data[id_key])
-        except NotFound:
-            log.debug(f'{model.__name__} not found', extra={
-                'id': data[id_key]
-            })
-            continue
-        if model_result.metrics['views'] === data[value_key]:
-            # Metric hasn't changed, skip update (useful for objects that are slow when saving)
-            continue
-        model_result.metrics['views'] = data[value_key]
-        try:
-            model_result.save(signal_kwargs={'ignores': ['post_save']})
-        except Exception as e:
-            log.exception(e)
-            continue
+        if model.__name__ == 'Resource':
+            # Specific case for resource:
+            # - it could either be a Dataset Resource embedded document or a CommunityResource
+            # - it requires special performance improvement to prevent saving the entire document
+            modified_count = Dataset.objects(resources__id=data[id_key]).update(
+                **{'set__resources__$__metrics__views': data[value_key]}
+            )
+            if not modified_count:
+                # No embedded resource found with this id, could be a CommunityResource
+                save_model(CommunityResource, model_id=data[id_key], value=data[value_key])
+        else:
+            save_model(model, model_id=data[id_key], value=data[value_key])
+    log.info(f'Done in {datetime.now() - start}')
