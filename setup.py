@@ -4,7 +4,7 @@ import os
 import io
 import re
 
-from setuptools import setup, find_packages
+from setuptools import setup
 
 RE_BADGE = re.compile(r'^\[\!\[(?P<text>.*?)\]\[(?P<badge>.*?)\]\]\[(?P<target>.*?)\]$', re.M)
 

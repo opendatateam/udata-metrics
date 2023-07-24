@@ -65,7 +65,7 @@ def test_process_metrics_result_generic(app, rmock, target, value_key, model, fa
     Objects should be updated with metrics views accordingly.
     '''
     model_objects = [factory() for i in range(10)]
-    mock_metrics_payload(app, rmock, target, value_key, 
+    mock_metrics_payload(app, rmock, target, value_key,
                          data=[(str(obj.id), i) for i, obj in enumerate(model_objects)])
     process_metrics_result(target, model, f'{target}_id', value_key)
 
