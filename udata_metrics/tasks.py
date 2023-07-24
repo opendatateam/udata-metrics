@@ -1,5 +1,7 @@
 import logging
 
+from flask import current_app
+
 from udata.models import Dataset, Resource, Reuse, Organization
 from udata.tasks import job
 
@@ -22,4 +24,7 @@ def update_metrics_for_models():
 @job('update-metrics', route='low.metrics')
 def update_metrics(self):
     '''Update udata objects metrics'''
+    if not current_app.config['METRICS_API']:
+        log.error('You need to set METRICS_API to run update-metrics')
+        exit(1)
     update_metrics_for_models()
