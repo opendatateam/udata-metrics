@@ -2,15 +2,20 @@ from collections import OrderedDict
 from datetime import date, datetime, timedelta
 import logging
 import requests
+import tqdm
 from typing import Union, List, Dict
+from uuid import UUID
 
 from bson import ObjectId
 from dateutil.rrule import rrule, MONTHLY
 from flask import current_app
 from pymongo.command_cursor import CommandCursor
 from mongoengine import QuerySet
+from werkzeug.exceptions import NotFound
 
 from udata.app import cache
+from udata.core.dataset.models import get_resource
+from udata.models import db
 
 
 log = logging.getLogger(__name__)
@@ -118,3 +123,51 @@ def get_stock_metrics(objects: QuerySet, date_label: str = 'created_at') -> List
     aggregation_res = objects.aggregate(*pipeline)
 
     return compute_monthly_aggregated_metrics(aggregation_res)
+
+
+def iterate_on_metrics(target: str, value_key: str):
+    '''
+    paginate on target endpoint
+    '''
+    url = f'{current_app.config["METRICS_API"]}/{target}_total/data/?{value_key}__greater=1'  # TODO: create view
+    r = requests.get(url)
+    r.raise_for_status()
+    data = r.json()
+    log.info(f'{data["meta"]["total"]} objects found')
+    for row in data['data']:
+        yield row
+    while data['links'].get('next'):
+        r = requests.get(current_app.config["METRICS_API"].replace('/api', '') + data['links'].get('next'))
+        r.raise_for_status()
+        data = r.json()
+        for row in data['data']:
+            yield row
+
+
+def process_metrics_result(target_endpoint: str,
+                           model: db.Document,
+                           id_key: str,
+                           value_key: str = 'visit'):
+    log.info(f'Processing model {model}')
+    for data in tqdm.tqdm(iterate_on_metrics(target_endpoint, value_key)):
+        try:
+            if model.__name__ == 'Resource':
+                model_result = get_resource(UUID(data[id_key]))
+                if not model_result:
+                    raise NotFound()
+            else:
+                model_result = model.get(data[id_key])
+        except NotFound:
+            log.debug(f'{model.__name__} not found', extra={
+                'id': data[id_key]
+            })
+            continue
+        if model_result.metrics['views'] === data[value_key]:
+            # Metric hasn't changed, skip update (useful for objects that are slow when saving)
+            continue
+        model_result.metrics['views'] = data[value_key]
+        try:
+            model_result.save(signal_kwargs={'ignores': ['post_save']})
+        except Exception as e:
+            log.exception(e)
+            continue

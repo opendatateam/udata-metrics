@@ -59,6 +59,9 @@ setup(
     entry_points={
         'udata.views': [
             'metrics = udata_metrics.views',
+        ],
+        'udata.tasks': [
+            'metrics = udata_metrics.tasks',
         ]
     },
     license='AGPL',
