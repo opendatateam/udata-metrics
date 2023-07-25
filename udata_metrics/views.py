@@ -5,7 +5,7 @@ from udata.i18n import I18nBlueprint
 from udata.models import Reuse, Follow, Dataset, User, Discussion, Post, Organization
 
 
-from udata_metrics.metrics import get_metrics_for_model, get_stock_metrics
+from udata_metrics.metrics import get_metrics_for_model, get_stock_metrics, get_download_url_for_model
 
 
 blueprint = I18nBlueprint('metrics', __name__, template_folder='templates')
@@ -22,13 +22,15 @@ def dataset_metrics(ctx):
         Reuse.objects(datasets=dataset).visible())
     followers_metrics = get_stock_metrics(Follow.objects(following=dataset),
                                           date_label='since')
+    metric_csv_url = get_download_url_for_model('dataset', dataset.id)
 
     return theme.render('dataset-metrics.html',
                         dataset=dataset,
                         visit=visit,
                         visit_resource=visit_resource,
                         reuses_metrics=reuses_metrics,
-                        followers_metrics=followers_metrics
+                        followers_metrics=followers_metrics,
+                        metric_csv_url=metric_csv_url
                         )
 
 
@@ -39,12 +41,14 @@ def reuse_metrics(ctx):
     visit, outlink_metrics = get_metrics_for_model(
         'reuse', reuse.id, ['visit', 'outlink'])
     followers_metrics = get_stock_metrics(Follow.objects(following=reuse), date_label='since')
+    metric_csv_url = get_download_url_for_model('reuse', reuse.id)
 
     return theme.render('reuse-metrics.html',
                         reuse=reuse,
                         visit=visit,
                         outlink_metrics=outlink_metrics,
-                        followers_metrics=followers_metrics
+                        followers_metrics=followers_metrics,
+                        metric_csv_url=metric_csv_url
                         )
 
 
@@ -66,6 +70,7 @@ def organization_metrics(ctx):
         date_label='since')
     dataset_reuse_metrics = get_stock_metrics(
         Reuse.objects(datasets__in=Dataset.objects(organization=org)).visible())
+    metric_csv_url = get_download_url_for_model('organization', org.id)
 
     return theme.render('organization-metrics.html',
                         org=org,
@@ -77,7 +82,8 @@ def organization_metrics(ctx):
                         reuse_metrics=reuse_metrics,
                         dataset_follower_metrics=dataset_follower_metrics,
                         reuse_follower_metrics=reuse_follower_metrics,
-                        dataset_reuse_metrics=dataset_reuse_metrics
+                        dataset_reuse_metrics=dataset_reuse_metrics,
+                        metric_csv_url=metric_csv_url
                         )
 
 
@@ -85,6 +91,7 @@ def organization_metrics(ctx):
 def site_metrics(ctx):
     visit_dataset, visit_resource, outlink_metrics = get_metrics_for_model(
         'site', None, ['visit_dataset', 'visit_resource', 'outlink'])
+    metric_csv_url = get_download_url_for_model('site', None)
 
     return theme.render('site-metrics.html',
                         update_date=Dataset.objects.filter(badges__kind='spd'),
@@ -101,5 +108,6 @@ def site_metrics(ctx):
                                                              date_label='created'),
                         visit_dataset=visit_dataset,
                         visit_resource=visit_resource,
-                        outlink_metrics=outlink_metrics
+                        outlink_metrics=outlink_metrics,
+                        metric_csv_url=metric_csv_url
                         )

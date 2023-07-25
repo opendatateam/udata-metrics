@@ -80,6 +80,14 @@ def get_metrics_for_model(
         return [{} for _ in range(len(metrics_labels))]
 
 
+def get_download_url_for_model(model: str, id: Union[str, ObjectId, None]):
+    models = model + 's' if id else model  # TODO: not clean of a hack
+    base_url = f'{current_app.config["METRICS_API"]}/{models}/data/csv/'
+    if id:
+        return f'{base_url}?{model}_id__exact={id}'
+    return base_url
+
+
 def compute_monthly_aggregated_metrics(aggregation_res: CommandCursor):
     monthly_metrics = OrderedDict((month, 0) for month in monthly_labels())
     for monthly_count in aggregation_res:

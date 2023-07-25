@@ -1,9 +1,17 @@
 {% from theme('macros/metrics.html') import metrics %}
 
 <section class="fr-container fr-py-5v vuejs">
-    <h2 class="subtitle subtitle--uppercase fr-mb-3v">
-        {{_("Metrics")}}
-    </h2>
+    <div class="fr-grid-row fr-grid-row--gutters fr-grid-row--gutters">
+        <div class="fr-col">
+            <h1 class="fr-h3">{{ _("Metrics") }}</h1>
+        </div>
+        <div class="fr-col-auto">
+            <a class="fr-btn fr-btn--secondary fr-btn--secondary-grey-500 fr-icon-download-line fr-btn--icon-left"
+               href="{{metric_csv_url}}">
+                {{ _("Download metrics as CSV") }}
+            </a>
+        </div>
+    </div>
     <div class="fr-grid-row fr-grid-row--gutters">
         {% if visit %}
             {{metrics(_("Views"), visit.values()|sum, visit, type="line", highlight_direction=True, as_percentage=True)}}

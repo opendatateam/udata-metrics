@@ -1,7 +1,17 @@
 {% from theme('macros/metrics.html') import metrics %}
 
 <section class="fr-pb-15v vuejs">
-    <h2 class="subtitle subtitle--uppercase">{{ _('General statistics') }}</h2>
+    <div class="fr-grid-row fr-grid-row--gutters fr-grid-row--gutters">
+        <div class="fr-col">
+            <h1 class="fr-h3">{{ _("General statistics") }}</h1>
+        </div>
+        <div class="fr-col-auto">
+            <a class="fr-btn fr-btn--secondary fr-btn--secondary-grey-500 fr-icon-download-line fr-btn--icon-left"
+               href="{{metric_csv_url}}">
+                {{ _("Download metrics as CSV") }}
+            </a>
+        </div>
+    </div>
     <div class="fr-grid-row fr-grid-row--gutters">
         {{metrics(_("Datasets"), org.metrics.datasets, dataset_metrics, type="bar", highlight_direction=True, as_percentage=True)}}
         {{metrics(_("Reuses"), org.metrics.reuses, reuse_metrics, type="bar", highlight_direction=True, as_percentage=True)}}
