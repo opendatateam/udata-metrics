@@ -5,7 +5,9 @@ from udata.i18n import I18nBlueprint
 from udata.models import Reuse, Follow, Dataset, User, Discussion, Post, Organization
 
 
-from udata_metrics.metrics import get_metrics_for_model, get_stock_metrics, get_download_url_for_model
+from udata_metrics.metrics import (
+    get_metrics_for_model, get_stock_metrics, get_download_url_for_model
+)
 
 
 blueprint = I18nBlueprint('metrics', __name__, template_folder='templates')
