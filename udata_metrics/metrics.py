@@ -19,7 +19,7 @@ log = logging.getLogger(__name__)
 METRICS_CACHE_DURATION = 60 * 60  # in seconds
 
 
-def monthly_labels():
+def monthly_labels() -> List[str]:
     return [month.strftime('%Y-%m') for month in rrule(
             MONTHLY,
             dtstart=date.today() - timedelta(days=365),
@@ -27,7 +27,7 @@ def monthly_labels():
             )]
 
 
-def compute_monthly_metrics(metrics_data: List[Dict], metrics_labels: List[str]) -> Dict:
+def compute_monthly_metrics(metrics_data: List[Dict], metrics_labels: List[str]) -> OrderedDict:
     # Initialize default monthly_metrics
     monthly_metrics = OrderedDict(
         (month, {label: 0 for label in metrics_labels}) for month in monthly_labels()
@@ -42,10 +42,11 @@ def compute_monthly_metrics(metrics_data: List[Dict], metrics_labels: List[str])
     return monthly_metrics
 
 
-def metrics_by_label(monthly_metrics: Dict, metrics_labels: List[str]) -> List[List[int]]:
+def metrics_by_label(monthly_metrics: Dict, metrics_labels: List[str]) -> List[OrderedDict]:
     metrics_by_label = []
     for label in metrics_labels:
-        metrics_by_label.append({month: monthly_metrics[month][label] for month in monthly_metrics})
+        metrics_by_label.append(
+            OrderedDict((month, monthly_metrics[month][label]) for month in monthly_metrics))
     return metrics_by_label
 
 
@@ -54,7 +55,7 @@ def get_metrics_for_model(
             model: str,
             id: Union[str, ObjectId, None],
             metrics_labels: List[str]
-        ) -> List[Dict[str, int]]:
+        ) -> List[OrderedDict]:
     '''
     Get distant metrics for a particular model object
     This uses @cache.cached decorator w/ short lived cache
@@ -80,7 +81,7 @@ def get_metrics_for_model(
         return [{} for _ in range(len(metrics_labels))]
 
 
-def get_download_url_for_model(model: str, id: Union[str, ObjectId, None]):
+def get_download_url_for_model(model: str, id: Union[str, ObjectId, None]) -> str:
     models = model + 's' if id else model  # TODO: not clean of a hack
     base_url = f'{current_app.config["METRICS_API"]}/{models}/data/csv/'
     if id:
@@ -88,7 +89,7 @@ def get_download_url_for_model(model: str, id: Union[str, ObjectId, None]):
     return base_url
 
 
-def compute_monthly_aggregated_metrics(aggregation_res: CommandCursor):
+def compute_monthly_aggregated_metrics(aggregation_res: CommandCursor) -> OrderedDict:
     monthly_metrics = OrderedDict((month, 0) for month in monthly_labels())
     for monthly_count in aggregation_res:
         year, month = monthly_count['_id'].split('-')
@@ -99,7 +100,7 @@ def compute_monthly_aggregated_metrics(aggregation_res: CommandCursor):
 
 
 @cache.memoize(METRICS_CACHE_DURATION)
-def get_stock_metrics(objects: QuerySet, date_label: str = 'created_at') -> List[int]:
+def get_stock_metrics(objects: QuerySet, date_label: str = 'created_at') -> OrderedDict:
     '''
     Get stock metrics for a particular model object
     This uses @cache.cached decorator w/ short lived cache
