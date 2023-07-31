@@ -14,12 +14,12 @@
     </div>
     <div class="fr-grid-row fr-grid-row--gutters">
         {% if visit %}
-            {{metrics(_("Views"), visit.values()|sum, visit, type="line", highlight_direction=True, as_percentage=True)}}
+            {{metrics(_("Views"), visit.values()|sum, visit, type="line")}}
         {% endif %}
         {% if visit_resource %}
-            {{metrics(_("Downloads"), visit_resource.values()|sum, visit_resource, type="line", highlight_direction=True, as_percentage=True)}}
+            {{metrics(_("Downloads"), visit_resource.values()|sum, visit_resource, type="line")}}
         {% endif %}
-        {{metrics(_("Reuses of this dataset"), dataset.metrics.reuses, reuses_metrics, type="bar", highlight_direction=True, as_percentage=True)}}
-        {{metrics(_("Followers"), dataset.metrics.followers, followers_metrics, type="bar", highlight_direction=True, as_percentage=True)}}
+        {{metrics(_("Reuses of this dataset"), dataset.metrics.reuses, reuses_metrics, type="bar")}}
+        {{metrics(_("Followers"), dataset.metrics.followers, followers_metrics, type="bar")}}
     </
 </section>

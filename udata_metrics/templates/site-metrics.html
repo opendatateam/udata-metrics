@@ -25,10 +25,10 @@
         <div class="fr-grid-row fr-grid-row--gutters">
             {{metrics(_("Users"), current_site.metrics['users'], user_metrics)}}
             {% if visit_dataset %}
-            {{metrics(_("Dataset visits"), visit_dataset.values()|sum, visit_dataset, type="line", highlight_direction=True, as_percentage=True)}}
+            {{metrics(_("Dataset visits"), visit_dataset.values()|sum, visit_dataset, type="line")}}
             {% endif %}
             {% if visit_resource %}
-            {{metrics(_("Resource downloads"), visit_resource.values()|sum, visit_resource, type="line", highlight_direction=True, as_percentage=True)}}
+            {{metrics(_("Resource downloads"), visit_resource.values()|sum, visit_resource, type="line")}}
             {% endif %}
         </div>
     </section>
@@ -37,11 +37,11 @@
             {{_("Catalog")}}
         </h2>
         <div class="fr-grid-row fr-grid-row--gutters">
-            {{metrics(_("Datasets"), current_site.metrics['datasets'], dataset_metrics, highlight_direction=True)}}
+            {{metrics(_("Datasets"), current_site.metrics['datasets'], dataset_metrics)}}
             {% if TODO %}
-            {{metrics(_("Files"), 236400, [233400, 236400], highlight_direction=True)}}
+            {{metrics(_("Files"), 236400, [233400, 236400])}}
             {% endif %}
-            {{metrics(_("Harvesters"), current_site.metrics['harvesters'], harvest_metrics, highlight_direction=True)}}
+            {{metrics(_("Harvesters"), current_site.metrics['harvesters'], harvest_metrics)}}
         </div>
     </section>
     <section>
@@ -50,10 +50,10 @@
         </h2>
         <div class="fr-grid-row fr-grid-row--gutters">
             {% if TODO %}
-            {{metrics(_("Downloads"), 175800, [145289, 175800], type="line", highlight_direction=True, as_percentage=True)}}
-            {{metrics(_("Exploration"), 5300, [2663, 5300], type="line", highlight_direction=True, as_percentage=True)}}
+            {{metrics(_("Downloads"), 175800, [145289, 175800], type="line")}}
+            {{metrics(_("Exploration"), 5300, [2663, 5300], type="line")}}
             {% endif %}
-            {{metrics(_("Reuses"), current_site.metrics['reuses'], reuse_metrics, highlight_direction=True)}}
+            {{metrics(_("Reuses"), current_site.metrics['reuses'], reuse_metrics)}}
         </div>
     </section>
     <section>
@@ -61,10 +61,10 @@
             {{_("Community")}}
         </h2>
         <div class="fr-grid-row fr-grid-row--gutters">
-            {{metrics(_("Organizations"), current_site.metrics['organizations'], organization_metrics, highlight_direction=True)}}
-            {{metrics(_("Discussions"), current_site.metrics['discussions'], discussion_metrics, highlight_direction=True)}}
+            {{metrics(_("Organizations"), current_site.metrics['organizations'], organization_metrics)}}
+            {{metrics(_("Discussions"), current_site.metrics['discussions'], discussion_metrics)}}
             {% if outlink_metrics %}
-            {{metrics(_("External site redirects"), outlink_metrics.values()|sum, outlink_metrics, type="line", highlight_direction=True)}}
+            {{metrics(_("External site redirects"), outlink_metrics.values()|sum, outlink_metrics, type="line")}}
             {% endif %}
         </div>
     </section>
