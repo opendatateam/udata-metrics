@@ -1,4 +1,4 @@
-{% macro metrics(title, value, data, type = "bar") %}
+{% macro metrics(title, value, data, type = "bar", hide_chart = False) %}
 {% set month_values = data.keys()|list %}
 {% set metric_values = data.values()|list %}
 {% set previous_month = metric_values[-3] %}
@@ -12,7 +12,7 @@
         <p class="h1 line-height-1 fr-m-0">
             {{value | summarize}}
         </p>
-        {% if changes_this_year %}
+        {% if changes_this_year and not hide_chart %}
         <div class="fr-ml-1w">
             <chart type="{{type}}" :data='{{data|tojson}}'></chart>
         </div>

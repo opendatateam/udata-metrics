@@ -19,7 +19,7 @@
         {% if visit_resource %}
             {{metrics(_("Downloads"), visit_resource.values()|sum, visit_resource, type="line")}}
         {% endif %}
-        {{metrics(_("Reuses of this dataset"), dataset.metrics.reuses, reuses_metrics, type="bar")}}
+        {{metrics(_("Reuses of this dataset"), dataset.metrics.reuses, reuses_metrics, type="bar", hide_chart=True)}}
         {{metrics(_("Followers"), dataset.metrics.followers, followers_metrics, type="bar")}}
     </
 </section>
