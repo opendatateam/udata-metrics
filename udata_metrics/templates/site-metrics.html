@@ -15,57 +15,34 @@
     </div>
     {{banner_info(
         None,
-        _("Metrics monthly changes and usage indicators of {site}. Data updated on {date}")
+        _("Metrics monthly changes and usage indicators of {site}, updated daily.")
         .format(site=current_site.title, date="2023-04-05")
     )}}
     <section>
-        <h2 class="fr-mt-6w">
-            {{_("Audience")}}
-        </h2>
         <div class="fr-grid-row fr-grid-row--gutters">
-            {{metrics(_("Users"), current_site.metrics['users'], user_metrics)}}
             {% if visit_dataset %}
             {{metrics(_("Dataset visits"), visit_dataset.values()|sum, visit_dataset, type="line")}}
             {% endif %}
             {% if visit_resource %}
             {{metrics(_("Resource downloads"), visit_resource.values()|sum, visit_resource, type="line")}}
             {% endif %}
+            {{metrics(_("Datasets"), current_site.metrics['datasets'], dataset_metrics)}}
         </div>
     </section>
     <section>
-        <h2 class="fr-mt-6w">
-            {{_("Catalog")}}
-        </h2>
         <div class="fr-grid-row fr-grid-row--gutters">
-            {{metrics(_("Datasets"), current_site.metrics['datasets'], dataset_metrics)}}
             {% if TODO %}
             {{metrics(_("Files"), 236400, [233400, 236400])}}
             {% endif %}
             {{metrics(_("Harvesters"), current_site.metrics['harvesters'], harvest_metrics)}}
-        </div>
-    </section>
-    <section>
-        <h2 class="fr-mt-6w">
-            {{_("Data usage")}}
-        </h2>
-        <div class="fr-grid-row fr-grid-row--gutters">
-            {% if TODO %}
-            {{metrics(_("Downloads"), 175800, [145289, 175800], type="line")}}
-            {{metrics(_("Exploration"), 5300, [2663, 5300], type="line")}}
-            {% endif %}
             {{metrics(_("Reuses"), current_site.metrics['reuses'], reuse_metrics)}}
         </div>
     </section>
     <section>
-        <h2 class="fr-mt-6w">
-            {{_("Community")}}
-        </h2>
         <div class="fr-grid-row fr-grid-row--gutters">
             {{metrics(_("Organizations"), current_site.metrics['organizations'], organization_metrics)}}
+            {{metrics(_("Users"), current_site.metrics['users'], user_metrics)}}
             {{metrics(_("Discussions"), current_site.metrics['discussions'], discussion_metrics)}}
-            {% if outlink_metrics %}
-            {{metrics(_("External site redirects"), outlink_metrics.values()|sum, outlink_metrics, type="line")}}
-            {% endif %}
         </div>
     </section>
 </section>
