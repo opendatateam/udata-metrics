@@ -1,5 +1,5 @@
 from collections import OrderedDict
-from datetime import date, datetime, timedelta
+from datetime import datetime, timedelta
 import logging
 import requests
 from typing import Union, List, Dict
