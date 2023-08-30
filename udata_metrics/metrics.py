@@ -19,18 +19,16 @@ log = logging.getLogger(__name__)
 METRICS_CACHE_DURATION = 60 * 60  # in seconds
 
 
-def monthly_labels() -> List[str]:
-    return [month.strftime('%Y-%m') for month in rrule(
-            MONTHLY,
-            dtstart=date.today() - timedelta(days=365),
-            until=date.today()
-            )]
+def get_last_13_months() -> List[str]:
+    dstart = datetime.today().replace(day=1) - timedelta(days=365)
+    months = rrule(freq=MONTHLY, count=13, dtstart=dstart)
+    return [month.strftime('%Y-%m') for month in months]
 
 
 def compute_monthly_metrics(metrics_data: List[Dict], metrics_labels: List[str]) -> OrderedDict:
     # Initialize default monthly_metrics
     monthly_metrics = OrderedDict(
-        (month, {label: 0 for label in metrics_labels}) for month in monthly_labels()
+        (month, {label: 0 for label in metrics_labels}) for month in get_last_13_months()
     )
     # Update monthly_metrics with metrics_data values
     for entry in metrics_data:
@@ -90,7 +88,7 @@ def get_download_url_for_model(model: str, id: Union[str, ObjectId, None]) -> st
 
 
 def compute_monthly_aggregated_metrics(aggregation_res: CommandCursor) -> OrderedDict:
-    monthly_metrics = OrderedDict((month, 0) for month in monthly_labels())
+    monthly_metrics = OrderedDict((month, 0) for month in get_last_13_months())
     for monthly_count in aggregation_res:
         year, month = monthly_count['_id'].split('-')
         monthly_label = year + '-' + month.zfill(2)
