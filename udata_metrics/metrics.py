@@ -149,19 +149,20 @@ def iterate_on_metrics(target: str, value_key: str) -> dict:
     '''
     paginate on target endpoint
     '''
-    url = f'{current_app.config["METRICS_API"]}/{target}_total/data/?{value_key}__greater=1'
-    r = requests.get(url)
-    r.raise_for_status()
-    data = r.json()
-    log.info(f'{data["meta"]["total"]} objects found')
-    for row in data['data']:
-        yield row
-    while data['links'].get('next'):
-        r = requests.get(data['links'].get('next'))
+    with requests.Session() as session:
+        url = f'{current_app.config["METRICS_API"]}/{target}_total/data/?{value_key}__greater=1'
+        r = session.get(url, timeout=10)
         r.raise_for_status()
         data = r.json()
+        log.info(f'{data["meta"]["total"]} objects found')
         for row in data['data']:
             yield row
+        while data['links'].get('next'):
+            r = session.get(data['links'].get('next'), timeout=15)
+            r.raise_for_status()
+            data = r.json()
+            for row in data['data']:
+                yield row
 
 
 def process_metrics_result(target_endpoint: str,
