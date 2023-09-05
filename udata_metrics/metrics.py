@@ -10,12 +10,8 @@ from flask import current_app
 from pymongo.command_cursor import CommandCursor
 from mongoengine import QuerySet
 
-from udata.app import cache
-
 
 log = logging.getLogger(__name__)
-
-METRICS_CACHE_DURATION = 60 * 60  # in seconds
 
 
 def get_last_13_months() -> List[str]:
@@ -47,7 +43,6 @@ def metrics_by_label(monthly_metrics: Dict, metrics_labels: List[str]) -> List[O
     return metrics_by_label
 
 
-@cache.memoize(METRICS_CACHE_DURATION)
 def get_metrics_for_model(
             model: str,
             id: Union[str, ObjectId, None],
@@ -55,7 +50,6 @@ def get_metrics_for_model(
         ) -> List[OrderedDict]:
     '''
     Get distant metrics for a particular model object
-    This uses @cache.cached decorator w/ short lived cache
     '''
     if not current_app.config['METRICS_API']:
         # TODO: How to best deal with no METRICS_API, prevent calling or return empty?
@@ -96,14 +90,9 @@ def compute_monthly_aggregated_metrics(aggregation_res: CommandCursor) -> Ordere
     return monthly_metrics
 
 
-@cache.memoize(METRICS_CACHE_DURATION)
 def get_stock_metrics(objects: QuerySet, date_label: str = 'created_at') -> OrderedDict:
     '''
     Get stock metrics for a particular model object
-    This uses @cache.cached decorator w/ short lived cache
-
-    TODO: check memoization https://flask-caching.readthedocs.io/en/latest/
-    > Using mutable objects (classes, etc) as part of the cache key can become tricky [...]
     '''
     pipeline = [
         {
