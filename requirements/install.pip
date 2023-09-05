@@ -1,2 +1,2 @@
 udata>=6.0.0
-udata-front>=1.0.0
+udata-front@git+https://github.com/maudetes/udata-front@feat/use-metrics-data
