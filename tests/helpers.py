@@ -20,10 +20,10 @@ def mock_metrics_payload(app, rmock, target, value_key, data, url=None, next=Non
     })
 
 
-def mock_monthly_metrics_payload(app, rmock, target, data, url=None):
+def mock_monthly_metrics_payload(app, rmock, target, data, target_id='id', url=None):
     if not url:
         url = f'{app.config["METRICS_API"]}/{target}s/data/' + \
-              f'?metric_month__sort=desc&{target}_id__exact=id'
+              f'?metric_month__sort=desc&{target}_id__exact={target_id}'
     current_month = datetime.now().strftime('%Y-%m')
     last_month = (datetime.now().replace(day=1) - timedelta(days=1)).strftime('%Y-%m')
     rmock.get(url, json={
