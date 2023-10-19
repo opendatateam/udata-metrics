@@ -2,6 +2,10 @@
 
 ## Current (in progress)
 
+- :warning: New metrics logic [#8](https://github.com/opendatateam/udata-metrics/pull/8)
+    - Add metrics views (using template hook)
+    - Use optional metrics API (with job to update metrics on objects)
+    - Remove Influx logic
 - Replace mongo legacy image in CI [#6](https://github.com/opendatateam/udata-metrics/pull/6)
 
 ## 1.0.2 (2020-07-01)
