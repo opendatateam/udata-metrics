@@ -19,30 +19,27 @@
         .format(site=current_site.title, date="2023-04-05")
     )}}
     <section>
-        <div class="fr-grid-row fr-grid-row--gutters">
+        <div class="fr-grid-row fr-grid-row--gutters fr-my-3w">
             {% if visit_dataset %}
-            {{metrics(_("Dataset visits"), visit_dataset.values()|sum, visit_dataset, type="line")}}
+            {{metrics(_("Dataset visits"), visit_dataset.values()|sum, visit_dataset, type="line", col_size=4)}}
             {% endif %}
             {% if download_resource %}
-            {{metrics(_("Resource downloads"), download_resource.values()|sum, download_resource, type="line")}}
+            {{metrics(_("Resource downloads"), download_resource.values()|sum, download_resource, type="line", col_size=4)}}
             {% endif %}
-            {{metrics(_("Datasets"), current_site.metrics['datasets'], dataset_metrics)}}
+            {{metrics(_("Datasets"), current_site.metrics['datasets'], dataset_metrics, col_size=4)}}
         </div>
     </section>
     <section>
-        <div class="fr-grid-row fr-grid-row--gutters">
-            {% if TODO %}
-            {{metrics(_("Files"), 236400, [233400, 236400])}}
-            {% endif %}
-            {{metrics(_("Harvesters"), current_site.metrics['harvesters'], harvest_metrics)}}
-            {{metrics(_("Reuses"), current_site.metrics['reuses'], reuse_metrics)}}
+        <div class="fr-grid-row fr-grid-row--gutters fr-mb-3w">
+            {{metrics(_("Harvesters"), current_site.metrics['harvesters'], harvest_metrics, col_size=4)}}
+            {{metrics(_("Reuses"), current_site.metrics['reuses'], reuse_metrics, col_size=4)}}
         </div>
     </section>
     <section>
-        <div class="fr-grid-row fr-grid-row--gutters">
-            {{metrics(_("Organizations"), current_site.metrics['organizations'], organization_metrics)}}
-            {{metrics(_("Users"), current_site.metrics['users'], user_metrics)}}
-            {{metrics(_("Discussions"), current_site.metrics['discussions'], discussion_metrics)}}
+        <div class="fr-grid-row fr-grid-row--gutters fr-mb-3w">
+            {{metrics(_("Organizations"), current_site.metrics['organizations'], organization_metrics, col_size=4)}}
+            {{metrics(_("Users"), current_site.metrics['users'], user_metrics, col_size=4)}}
+            {{metrics(_("Discussions"), current_site.metrics['discussions'], discussion_metrics, col_size=4)}}
         </div>
     </section>
 </section>

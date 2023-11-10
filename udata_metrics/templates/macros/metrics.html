@@ -1,4 +1,4 @@
-{% macro metrics(title, value, data, type = "bar", hide_chart = False) %}
+{% macro metrics(title, value, data, type = "bar", hide_chart = False, col_size=3) %}
 {% set month_values = data.keys()|list %}
 {% set metric_values = data.values()|list %}
 {% set previous_month = metric_values[-3] %}
@@ -6,7 +6,7 @@
 {% set current_month_date = month_values[-2] %}
 {% set change = current_month - previous_month %}
 {% set changes_this_year = metric_values|max is greaterthan 0 %}
-<div class="fr-col-12 fr-col-md-3 {% if not value and not changes_this_year %} text-mention-grey {% endif %}">
+<div class="fr-col-12 fr-col-md-{{col_size}} {% if not value and not changes_this_year %} text-mention-grey {% endif %}">
     <h3 class="fr-text--sm fr-m-0">{{title}}</h3>
     <div class="fr-grid-row fr-grid-row--middle">
         <p class="h1 line-height-1 fr-m-0">
