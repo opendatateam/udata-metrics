@@ -35,7 +35,7 @@ class MetricsBlueprintTest:
                                      target_id=model.id)
         context_target = 'org' if target == 'organization' else target
         response = render_hook(f'{target}.display.metrics', **{context_target: model})
-        assert 'Download metrics as CSV' in response
+        assert 'Download traffic metrics as CSV' in response
 
     def test_render_site_display(self, app, rmock):
         '''It should render the site metrics'''
@@ -43,4 +43,4 @@ class MetricsBlueprintTest:
         url = f'{app.config["METRICS_API"]}/site/data/?metric_month__sort=desc'
         mock_monthly_metrics_payload(app, rmock, 'site', data=data, url=url)
         response = render_hook('site.display.metrics')
-        assert 'Download metrics as CSV' in response
+        assert 'Download traffic metrics as CSV' in response
