@@ -2,6 +2,7 @@ from collections import OrderedDict
 from datetime import datetime, timedelta
 import logging
 import requests
+from urllib.parse import urlencode
 from typing import Union, List, Dict
 
 from bson import ObjectId
@@ -72,12 +73,13 @@ def get_metrics_for_model(
         return [{} for _ in range(len(metrics_labels))]
 
 
-def get_download_url_for_model(model: str, id: Union[str, ObjectId, None]) -> str:
-    models = model + 's' if id else model  # TODO: not clean of a hack
-    base_url = f'{current_app.config["METRICS_API"]}/{models}/data/csv/'
+def get_download_url(model: str, id: Union[str, ObjectId, None]) -> str:
+    api_namespace = model + 's' if model != 'site' else ''
+    base_url = f'{current_app.config["METRICS_API"]}/{api_namespace}/data/csv/'
+    args = {'metric_month__sort': 'asc'}
     if id:
-        return f'{base_url}?{model}_id__exact={id}'
-    return base_url
+        args[f'{model}_id__exact'] = id
+    return f'{base_url}?{urlencode(args)}'
 
 
 def compute_monthly_aggregated_metrics(aggregation_res: CommandCursor) -> OrderedDict:
