@@ -63,7 +63,7 @@ def test_process_metrics_result_resource(app, rmock):
     Embedded resources should be updated with metrics views accordingly.
     '''
     target = 'resource'
-    value_key = 'visit_resource'
+    value_key = 'download_resource'
     resources = [ResourceFactory() for i in range(10)]
     dataset = DatasetFactory(resources=resources)
     mock_metrics_payload(app, rmock, target, value_key,
@@ -80,7 +80,7 @@ def test_process_metrics_result_community_resource(app, rmock):
     Since no embedded resource should be find by id, community objects should be updated.
     '''
     target = 'resource'
-    value_key = 'visit_resource'
+    value_key = 'download_resource'
     resources = [CommunityResourceFactory() for i in range(10)]
     mock_metrics_payload(app, rmock, target, value_key,
                          data=[(str(obj.id), i) for i, obj in enumerate(resources)])

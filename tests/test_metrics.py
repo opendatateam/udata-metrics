@@ -13,9 +13,9 @@ from .helpers import mock_monthly_metrics_payload
 
 
 @pytest.mark.parametrize('target,value_keys', [
-    ('dataset', ['visit', 'visit_resource']),
+    ('dataset', ['visit', 'download_resource']),
     ('reuse', ['visit']),
-    ('organization', ['visit_dataset', 'visit_resource', 'visit_reuse'])
+    ('organization', ['visit_dataset', 'download_resource', 'visit_reuse'])
 ])
 def test_get_metrics_for_model(app, rmock, target, value_keys):
     mock_monthly_metrics_payload(app, rmock, target,
@@ -28,7 +28,7 @@ def test_get_metrics_for_model(app, rmock, target, value_keys):
 
 
 def test_get_metrics_for_site(app, rmock):
-    value_keys = ['visit_dataset', 'visit_resource', ]
+    value_keys = ['visit_dataset', 'download_resource', ]
     url = f'{app.config["METRICS_API"]}/site/data/?metric_month__sort=desc'
     mock_monthly_metrics_payload(app, rmock, 'site',
                                  data=[(value_key, 2403) for value_key in value_keys], url=url)

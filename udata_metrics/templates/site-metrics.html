@@ -23,8 +23,8 @@
             {% if visit_dataset %}
             {{metrics(_("Dataset visits"), visit_dataset.values()|sum, visit_dataset, type="line")}}
             {% endif %}
-            {% if visit_resource %}
-            {{metrics(_("Resource downloads"), visit_resource.values()|sum, visit_resource, type="line")}}
+            {% if download_resource %}
+            {{metrics(_("Resource downloads"), download_resource.values()|sum, download_resource, type="line")}}
             {% endif %}
             {{metrics(_("Datasets"), current_site.metrics['datasets'], dataset_metrics)}}
         </div>

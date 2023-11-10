@@ -21,8 +21,8 @@
         {% if visit_dataset %}
             {{metrics(_("Views"), visit_dataset.values()|sum, visit_dataset, type="line")}}
         {% endif %}
-        {% if visit_resource %}
-            {{metrics(_("Downloads"), visit_resource.values()|sum, visit_resource, type="line")}}
+        {% if download_resource %}
+            {{metrics(_("Downloads"), download_resource.values()|sum, download_resource, type="line")}}
         {% endif %}
         {{metrics(_("Reuses on datasets"), dataset_reuse_metrics.values()|sum, dataset_reuse_metrics, type="line")}}
         {{metrics(_("Followers"), dataset_follower_metrics.values()|sum, dataset_follower_metrics, type="bar")}}

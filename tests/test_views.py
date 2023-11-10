@@ -23,9 +23,9 @@ def render_hook(hook, **kwargs):
 @pytest.mark.options(plugins=['front', 'metrics'])
 class MetricsBlueprintTest:
     @pytest.mark.parametrize('target,factory,value_keys', [
-        ('dataset', DatasetFactory, ['visit', 'visit_resource']),
+        ('dataset', DatasetFactory, ['visit', 'download_resource']),
         ('reuse', ReuseFactory, ['visit']),
-        ('organization', OrganizationFactory, ['visit_dataset', 'visit_resource', 'visit_reuse'])
+        ('organization', OrganizationFactory, ['visit_dataset', 'download_resource', 'visit_reuse'])
     ])
     def test_render_metrics_for_model(self, app, rmock, target, factory, value_keys):
         '''It should render the model metrics'''
@@ -39,7 +39,7 @@ class MetricsBlueprintTest:
 
     def test_render_site_display(self, app, rmock):
         '''It should render the site metrics'''
-        data = [('visit_dataset', 337), ('visit_resource', 42)]
+        data = [('visit_dataset', 337), ('download_resource', 42)]
         url = f'{app.config["METRICS_API"]}/site/data/?metric_month__sort=desc'
         mock_monthly_metrics_payload(app, rmock, 'site', data=data, url=url)
         response = render_hook('site.display.metrics')

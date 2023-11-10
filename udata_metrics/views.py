@@ -22,15 +22,15 @@ def get_dataset_metrics(dataset_id: str):
     '''
     This uses @cache.memoize decorator w/ short lived cache
     '''
-    visit, visit_resource = get_metrics_for_model(
-        'dataset', dataset_id, ['visit', 'visit_resource'])
+    visit, download_resource = get_metrics_for_model(
+        'dataset', dataset_id, ['visit', 'download_resource'])
     reuses_metrics = get_stock_metrics(
         Reuse.objects(datasets=dataset_id).visible())
     followers_metrics = get_stock_metrics(Follow.objects(following=dataset_id),
                                           date_label='since')
     return {
         'visit': visit,
-        'visit_resource': visit_resource,
+        'download_resource': download_resource,
         'reuses_metrics': reuses_metrics,
         'followers_metrics': followers_metrics
     }
@@ -54,8 +54,8 @@ def get_organization_metrics(organization_id: str):
     '''
     This uses @cache.memoize decorator w/ short lived cache
     '''
-    visit_dataset, visit_resource, visit_reuse = get_metrics_for_model(
-        'organization', organization_id, ['visit_dataset', 'visit_resource', 'visit_reuse'])
+    visit_dataset, download_resource, visit_reuse = get_metrics_for_model(
+        'organization', organization_id, ['visit_dataset', 'download_resource', 'visit_reuse'])
     dataset_metrics = get_stock_metrics(
         Dataset.objects(organization=organization_id).visible(),
         date_label='created_at_internal')
@@ -71,7 +71,7 @@ def get_organization_metrics(organization_id: str):
         Reuse.objects(datasets__in=Dataset.objects(organization=organization_id)).visible())
     return {
         'visit_dataset': visit_dataset,
-        'visit_resource': visit_resource,
+        'download_resource': download_resource,
         'visit_reuse': visit_reuse,
         'dataset_metrics': dataset_metrics,
         'reuse_metrics': reuse_metrics,
@@ -86,8 +86,8 @@ def get_site_metrics():
     '''
     This uses @cache.memoize decorator w/ short lived cache
     '''
-    visit_dataset, visit_resource = get_metrics_for_model(
-        'site', None, ['visit_dataset', 'visit_resource'])
+    visit_dataset, download_resource = get_metrics_for_model(
+        'site', None, ['visit_dataset', 'download_resource'])
     user_metrics = get_stock_metrics(User.objects())
     dataset_metrics = get_stock_metrics(Dataset.objects().visible(),
                                         date_label='created_at_internal')
@@ -97,7 +97,7 @@ def get_site_metrics():
     discussion_metrics = get_stock_metrics(Discussion.objects(), date_label='created')
     return {
         'visit_dataset': visit_dataset,
-        'visit_resource': visit_resource,
+        'download_resource': download_resource,
         'user_metrics': user_metrics,
         'dataset_metrics': dataset_metrics,
         'harvest_metrics': harvest_metrics,

@@ -76,7 +76,7 @@ def process_metrics_result(target_endpoint: str,
 def update_metrics_for_models():
     for target, model, id_key, value_key in [
         ('datasets', Dataset, 'dataset_id', 'visit'),
-        ('resources', Resource, 'resource_id', 'visit_resource'),
+        ('resources', Resource, 'resource_id', 'download_resource'),
         ('reuses', Reuse, 'reuse_id', 'visit'),
         # We're currently using visit_dataset as global metric for an orga
         ('organizations', Organization, 'organization_id', 'visit_dataset')
