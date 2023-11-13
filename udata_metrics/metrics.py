@@ -74,7 +74,7 @@ def get_metrics_for_model(
 
 
 def get_download_url(model: str, id: Union[str, ObjectId, None]) -> str:
-    api_namespace = model + 's' if model != 'site' else ''
+    api_namespace = model + 's' if model != 'site' else model
     base_url = f'{current_app.config["METRICS_API"]}/{api_namespace}/data/csv/'
     args = {'metric_month__sort': 'asc'}
     if id:
