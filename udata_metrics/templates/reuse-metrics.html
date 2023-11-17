@@ -1,6 +1,6 @@
 {% from theme('macros/metrics.html') import metrics %}
 
-<section class="fr-pb-3w fr-my-3w border-bottom vuejs">
+<section class="fr-pb-3w fr-my-3w border-bottom border-default-grey vuejs">
     <div class="fr-grid-row fr-grid-row--gutters fr-grid-row--gutters">
         <div class="fr-col">
             <h2 class="subtitle subtitle--uppercase fr-mb-3v">{{ _("Statistics") }}</h2>
@@ -17,5 +17,5 @@
             {{metrics(_("Views"), visit.values()|sum, visit, type="line")}}
         {% endif %}
         {{metrics(_("Followers"), reuse.metrics.followers, followers_metrics, type="bar")}}
-    </
+    </div>
 </section>
