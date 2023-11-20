@@ -1,0 +1,117 @@
+msgid ""
+msgstr ""
+"Project-Id-Version: udata-metrics\n"
+"Report-Msgid-Bugs-To: data.gouv@data.gouv.fr\n"
+"POT-Creation-Date: 2023-11-20 17:20+0100\n"
+"PO-Revision-Date: 2023-11-20 16:28\n"
+"Last-Translator: Data.gouv.fr Team <data.gouv@data.gouv.fr>\n"
+"Language: fr\n"
+"Language-Team: French\n"
+"Plural-Forms: nplurals=2; plural=(n > 1);\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Generated-By: Babel 2.8.0\n"
+"X-Crowdin-Project: udata-metrics\n"
+"X-Crowdin-Project-ID: 628998\n"
+"X-Crowdin-Language: fr\n"
+"X-Crowdin-File: /master/udata_metrics/translations/udata_metrics.pot\n"
+"X-Crowdin-File-ID: 20\n"
+
+#: udata_metrics/templates/dataset-metrics.html:6
+#: udata_metrics/templates/reuse-metrics.html:6
+msgid "Statistics"
+msgstr "Statistiques"
+
+#: udata_metrics/templates/dataset-metrics.html:11
+#: udata_metrics/templates/organization-metrics.html:11
+#: udata_metrics/templates/reuse-metrics.html:11
+#: udata_metrics/templates/site-metrics.html:12
+msgid "Download traffic metrics as CSV"
+msgstr "Télécharger les statistiques de trafic au format CSV"
+
+#: udata_metrics/templates/dataset-metrics.html:17
+#: udata_metrics/templates/organization-metrics.html:22
+#: udata_metrics/templates/organization-metrics.html:33
+#: udata_metrics/templates/reuse-metrics.html:17
+msgid "Views"
+msgstr "Visites"
+
+#: udata_metrics/templates/dataset-metrics.html:20
+#: udata_metrics/templates/organization-metrics.html:25
+msgid "Downloads"
+msgstr "Téléchargements"
+
+#: udata_metrics/templates/dataset-metrics.html:22
+msgid "Reuses of this dataset"
+msgstr "Réutilisations de ce jeu de données"
+
+#: udata_metrics/templates/dataset-metrics.html:23
+#: udata_metrics/templates/organization-metrics.html:28
+#: udata_metrics/templates/organization-metrics.html:35
+#: udata_metrics/templates/reuse-metrics.html:19
+msgid "Followers"
+msgstr "Favoris"
+
+#: udata_metrics/templates/organization-metrics.html:6
+msgid "General statistics"
+msgstr "Statistiques générales"
+
+#: udata_metrics/templates/organization-metrics.html:16
+#: udata_metrics/templates/site-metrics.html:29
+msgid "Datasets"
+msgstr "Jeux de données"
+
+#: udata_metrics/templates/organization-metrics.html:17
+#: udata_metrics/templates/site-metrics.html:35
+msgid "Reuses"
+msgstr "Réutilisations"
+
+#: udata_metrics/templates/organization-metrics.html:19
+msgid "Datasets statistics"
+msgstr "Statistiques des jeux de données"
+
+#: udata_metrics/templates/organization-metrics.html:27
+msgid "Reuses on datasets"
+msgstr "Réutilisations des jeux de données"
+
+#: udata_metrics/templates/organization-metrics.html:30
+msgid "Reuses statistics"
+msgstr "Statistiques des réutilisations"
+
+#: udata_metrics/templates/site-metrics.html:7
+msgid "Metrics"
+msgstr "Métriques"
+
+#: udata_metrics/templates/site-metrics.html:18
+msgid "Metrics monthly changes and usage indicators of {site}, updated daily."
+msgstr "Évolution des statistiques et indicateurs d’usage de {site} mis à jour quotidiennement."
+
+#: udata_metrics/templates/site-metrics.html:24
+msgid "Dataset visits"
+msgstr "Visites des jeux de données"
+
+#: udata_metrics/templates/site-metrics.html:27
+msgid "Resource downloads"
+msgstr "Téléchargement des ressources"
+
+#: udata_metrics/templates/site-metrics.html:34
+msgid "Harvesters"
+msgstr "Moissonneurs"
+
+#: udata_metrics/templates/site-metrics.html:40
+msgid "Organizations"
+msgstr "Organisations"
+
+#: udata_metrics/templates/site-metrics.html:41
+msgid "Users"
+msgstr "Utilisateurs"
+
+#: udata_metrics/templates/site-metrics.html:42
+msgid "Discussions"
+msgstr "Discussions"
+
+#: udata_metrics/templates/macros/metrics.html:26
+msgid " in "
+msgstr " en "
+
