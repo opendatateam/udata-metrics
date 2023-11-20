@@ -24,7 +24,7 @@
         {% if download_resource %}
             {{metrics(_("Downloads"), download_resource.values()|sum, download_resource, type="line")}}
         {% endif %}
-        {{metrics(_("Reuses on datasets"), dataset_reuse_metrics.values()|sum, dataset_reuse_metrics, type="line")}}
+        {{metrics(_("Reuses on datasets"), dataset_reuse_metrics.values()|sum, dataset_reuse_metrics, type="bar")}}
         {{metrics(_("Followers"), dataset_follower_metrics.values()|sum, dataset_follower_metrics, type="bar")}}
     </div>
     <h2 class="subtitle subtitle--uppercase fr-pt-10v">{{ _('Reuses statistics') }}</h2>
