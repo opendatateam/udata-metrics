@@ -1,2 +1,2 @@
-udata>=2.0.0
-influxdb==5.2.3
+udata>=6.0.0
+udata-front>=3.2.8

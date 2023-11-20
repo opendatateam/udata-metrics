@@ -1,0 +1,37 @@
+{% from theme('macros/metrics.html') import metrics %}
+
+<section class="fr-pb-3w fr-mb-3w border-bottom border-default-grey vuejs">
+    <div class="fr-grid-row fr-grid-row--gutters fr-grid-row--gutters">
+        <div class="fr-col">
+            <h2 class="subtitle subtitle--uppercase fr-m-0">{{ _("General statistics") }}</h2>
+        </div>
+        <div class="fr-col-auto">
+            <a class="fr-btn fr-btn--sm fr-btn--secondary fr-btn--secondary-grey-500 fr-icon-download-line fr-btn--icon-left"
+               href="{{metric_csv_url}}">
+                {{ _("Download traffic metrics as CSV") }}
+            </a>
+        </div>
+    </div>
+    <div class="fr-grid-row fr-grid-row--gutters">
+        {{metrics(_("Datasets"), org.metrics.datasets, dataset_metrics, type="bar")}}
+        {{metrics(_("Reuses"), org.metrics.reuses, reuse_metrics, type="bar")}}
+    </div>
+    <h2 class="subtitle subtitle--uppercase fr-pt-10v">{{ _('Datasets statistics') }}</h2>
+    <div class="fr-grid-row fr-grid-row--gutters">
+        {% if visit_dataset %}
+            {{metrics(_("Views"), visit_dataset.values()|sum, visit_dataset, type="line")}}
+        {% endif %}
+        {% if download_resource %}
+            {{metrics(_("Downloads"), download_resource.values()|sum, download_resource, type="line")}}
+        {% endif %}
+        {{metrics(_("Reuses on datasets"), dataset_reuse_metrics.values()|sum, dataset_reuse_metrics, type="bar")}}
+        {{metrics(_("Followers"), dataset_follower_metrics.values()|sum, dataset_follower_metrics, type="bar")}}
+    </div>
+    <h2 class="subtitle subtitle--uppercase fr-pt-10v">{{ _('Reuses statistics') }}</h2>
+    <div class="fr-grid-row fr-grid-row--gutters">
+        {% if visit_reuse %}
+            {{metrics(_("Views"), visit_reuse.values()|sum, visit_reuse, type="line")}}
+        {% endif %}
+        {{metrics(_("Followers"), reuse_follower_metrics.values()|sum, reuse_follower_metrics, type="bar")}}
+    </div>
+</section>

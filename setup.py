@@ -4,7 +4,7 @@ import os
 import io
 import re
 
-from setuptools import setup, find_packages
+from setuptools import setup
 
 RE_BADGE = re.compile(r'^\[\!\[(?P<text>.*?)\]\[(?P<badge>.*?)\]\]\[(?P<target>.*?)\]$', re.M)
 
@@ -57,17 +57,12 @@ setup(
         'test': tests_require,
     },
     entry_points={
-        'udata.models': [
-            'metrics = udata_metrics.models',
+        'udata.views': [
+            'metrics = udata_metrics.views',
         ],
-        
         'udata.tasks': [
             'metrics = udata_metrics.tasks',
-        ],
-        
-        'udata.plugins': [
-            'metrics = udata_metrics',
-        ],
+        ]
     },
     license='AGPL',
     zip_safe=False,

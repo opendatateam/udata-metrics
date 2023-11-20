@@ -1,0 +1,25 @@
+{% from theme('macros/metrics.html') import metrics %}
+
+<section class="fr-pb-3w fr-mb-3w border-bottom border-default-grey vuejs">
+    <div class="fr-grid-row fr-grid-row--gutters fr-grid-row--gutters">
+        <div class="fr-col">
+            <h2 class="subtitle subtitle--uppercase">{{ _("Statistics") }}</h2>
+        </div>
+        <div class="fr-col-auto">
+            <a class="fr-btn fr-btn--sm fr-btn--secondary fr-btn--secondary-grey-500 fr-icon-download-line fr-btn--icon-left"
+               href="{{metric_csv_url}}">
+                {{ _("Download traffic metrics as CSV") }}
+            </a>
+        </div>
+    </div>
+    <div class="fr-grid-row fr-grid-row--gutters">
+        {% if visit %}
+            {{metrics(_("Views"), visit.values()|sum, visit, type="line")}}
+        {% endif %}
+        {% if download_resource %}
+            {{metrics(_("Downloads"), download_resource.values()|sum, download_resource, type="line")}}
+        {% endif %}
+        {{metrics(_("Reuses of this dataset"), dataset.metrics.reuses, reuses_metrics, type="bar", hide_chart=True)}}
+        {{metrics(_("Followers"), dataset.metrics.followers, followers_metrics, type="bar")}}
+    </
+</section>

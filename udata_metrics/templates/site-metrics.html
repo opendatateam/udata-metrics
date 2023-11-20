@@ -1,0 +1,45 @@
+{% from theme('macros/banner_info.html') import banner_info %}
+{% from theme('macros/metrics.html') import metrics %}
+
+<section class="fr-container fr-mb-16w vuejs">
+    <div class="fr-grid-row fr-grid-row--gutters fr-grid-row--gutters">
+        <div class="fr-col">
+            <h1 class="fr-h3">{{ _("Metrics") }}</h1>
+        </div>
+        <div class="fr-col-auto">
+            <a class="fr-btn fr-btn--sm fr-btn--secondary fr-btn--secondary-grey-500 fr-icon-download-line fr-btn--icon-left"
+               href="{{metric_csv_url}}">
+                {{ _("Download traffic metrics as CSV") }}
+            </a>
+        </div>
+    </div>
+    {{banner_info(
+        None,
+        _("Metrics monthly changes and usage indicators of {site}, updated daily.")
+        .format(site=current_site.title, date="2023-04-05")
+    )}}
+    <section>
+        <div class="fr-grid-row fr-grid-row--gutters fr-my-3w">
+            {% if visit_dataset %}
+            {{metrics(_("Dataset visits"), visit_dataset.values()|sum, visit_dataset, type="line", col_size=4)}}
+            {% endif %}
+            {% if download_resource %}
+            {{metrics(_("Resource downloads"), download_resource.values()|sum, download_resource, type="line", col_size=4)}}
+            {% endif %}
+            {{metrics(_("Datasets"), current_site.metrics['datasets'], dataset_metrics, col_size=4)}}
+        </div>
+    </section>
+    <section>
+        <div class="fr-grid-row fr-grid-row--gutters fr-mb-3w">
+            {{metrics(_("Harvesters"), current_site.metrics['harvesters'], harvest_metrics, col_size=4)}}
+            {{metrics(_("Reuses"), current_site.metrics['reuses'], reuse_metrics, col_size=4)}}
+        </div>
+    </section>
+    <section>
+        <div class="fr-grid-row fr-grid-row--gutters fr-mb-3w">
+            {{metrics(_("Organizations"), current_site.metrics['organizations'], organization_metrics, col_size=4)}}
+            {{metrics(_("Users"), current_site.metrics['users'], user_metrics, col_size=4)}}
+            {{metrics(_("Discussions"), current_site.metrics['discussions'], discussion_metrics, col_size=4)}}
+        </div>
+    </section>
+</section>
