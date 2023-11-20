@@ -59,7 +59,6 @@ coverage.xml
 
 # Translations
 *.mo
-*.pot
 
 # Mr Developer
 .mr.developer.cfg
