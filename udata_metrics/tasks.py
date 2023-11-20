@@ -33,7 +33,8 @@ def iterate_on_metrics(target: str, value_key: str) -> dict:
     paginate on target endpoint
     '''
     with requests.Session() as session:
-        url = f'{current_app.config["METRICS_API"]}/{target}_total/data/?{value_key}__greater=1&page_size=50'
+        url = f'{current_app.config["METRICS_API"]}/{target}_total/data/'
+        url += f'?{value_key}__greater=1&page_size=50'
         r = session.get(url, timeout=10)
         r.raise_for_status()
         data = r.json()
