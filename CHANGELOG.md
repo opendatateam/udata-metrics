@@ -1,5 +1,9 @@
 # Changelog
 
+## Current (in progress)
+
+- Nothing yet
+
 ## 2.0.0 (2023-11-21)
 
 - :warning: New metrics logic [#8](https://github.com/opendatateam/udata-metrics/pull/8)
