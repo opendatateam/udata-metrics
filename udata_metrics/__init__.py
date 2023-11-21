@@ -5,7 +5,7 @@ Connexion handler to metrics service for udata
 '''
 
 
-__version__ = '1.0.3.dev'
+__version__ = '2.0.0'
 __description__ = 'Connexion handler to metrics service for udata'
 
 
