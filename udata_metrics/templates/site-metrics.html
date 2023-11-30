@@ -26,11 +26,11 @@
             {% if download_resource %}
             {{metrics(_("Resource downloads"), download_resource.values()|sum, download_resource, type="line", col_size=4)}}
             {% endif %}
-            {{metrics(_("Datasets"), current_site.metrics['datasets'], dataset_metrics, col_size=4)}}
         </div>
     </section>
     <section>
         <div class="fr-grid-row fr-grid-row--gutters fr-mb-3w">
+            {{metrics(_("Datasets"), current_site.metrics['datasets'], dataset_metrics, col_size=4)}}
             {{metrics(_("Harvesters"), current_site.metrics['harvesters'], harvest_metrics, col_size=4)}}
             {{metrics(_("Reuses"), current_site.metrics['reuses'], reuse_metrics, col_size=4)}}
         </div>
