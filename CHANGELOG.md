@@ -2,7 +2,12 @@
 
 ## Current (in progress)
 
-- Nothing yet
+- Improve metrics layout [#11](https://github.com/opendatateam/udata-metrics/pull/11)
+    - Specify that statistics are for the year
+    - Move datasets graph on the second row in dashboard stats
+    - Use current month value (and not variation)
+    - Prevent upper or lowercasing by removing any text transformation
+
 
 ## 2.0.0 (2023-11-21)
 
