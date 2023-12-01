@@ -1,6 +1,6 @@
 # Changelog
 
-## Current (in progress)
+## 2.0.1 (2023-12-01)
 
 - Improve metrics layout [#11](https://github.com/opendatateam/udata-metrics/pull/11)
     - Specify that statistics are for the year
