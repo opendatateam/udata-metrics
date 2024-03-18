@@ -2,7 +2,7 @@
 
 ## Current (in progress)
 
-- Nothing yet
+- Update translations [#13](https://github.com/opendatateam/udata-metrics/pull/13)
 
 ## 2.0.1 (2023-12-01)
 
