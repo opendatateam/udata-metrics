@@ -1,6 +1,6 @@
 # Changelog
 
-## Current (in progress)
+## 2.0.2 (2024-03-20)
 
 - Update translations [#13](https://github.com/opendatateam/udata-metrics/pull/13)
 
