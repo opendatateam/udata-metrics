@@ -4,6 +4,10 @@
 
 - Nothing yet
 
+## 2.0.2 (2024-03-20)
+
+- Update translations [#13](https://github.com/opendatateam/udata-metrics/pull/13)
+
 ## 2.0.1 (2023-12-01)
 
 - Improve metrics layout [#11](https://github.com/opendatateam/udata-metrics/pull/11)
