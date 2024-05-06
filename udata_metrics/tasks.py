@@ -36,12 +36,12 @@ def save_model(model: db.Document, model_id: str, key: str, value: int) -> None:
         log.exception(e)
 
 
-def iterate_on_metrics(target: str, value_key: str) -> dict:
+def iterate_on_metrics(target: str, value_key: str, page_size: int = 50) -> dict:
     '''
     paginate on target endpoint
     '''
     url = f'{current_app.config["METRICS_API"]}/{target}_total/data/'
-    url += f'?{value_key}__greater=1&page_size=50'
+    url += f'?{value_key}__greater=1&page_size={page_size}'
 
     with requests.Session() as session:
         while url is not None:

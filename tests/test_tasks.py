@@ -3,38 +3,26 @@ import pytest
 from udata.core.dataset.factories import CommunityResourceFactory, DatasetFactory, ResourceFactory
 from udata.core.organization.factories import OrganizationFactory
 from udata.core.reuse.factories import ReuseFactory
-from udata.models import Dataset, Organization, Resource, Reuse
 
 from udata_metrics.tasks import (
     iterate_on_metrics, update_datasets, update_organizations, update_resources_and_community_resources, update_reuses
 )
-from .helpers import mock_metrics_api, mock_metrics_payload
+from .helpers import mock_metrics_api
 
 
 def test_iterate_on_metrics(app, rmock):
-    target = 'dataset'
-    value_key = 'visit'
-    mock_metrics_payload(app, rmock, target, value_key, [('id1', 1), ('id2', 2)],
-                         next=f'{app.config["METRICS_API"]}/{target}_total/data/'
-                              f'?{value_key}__greater=1&page=2&page_size=10',
-                         total=3)
-    mock_metrics_payload(app, rmock, target, value_key, [('id3', 3)],
-                         url=f'{app.config["METRICS_API"]}/{target}_total/data/'
-                             f'?{value_key}__greater=1&page=2&page_size=10',
-                         next=None,
-                         total=3)
-    metrics_data = list(iterate_on_metrics(target, value_key))
+    mock_metrics_api(app, rmock, "test_model", "test_key", [
+        { 'id': 1 },
+        { 'id': 2 },
+        { 'id': 3 },
+    ], page_size=2)
+
+    metrics_data = list(iterate_on_metrics("test_model", "test_key", page_size=2))
+
     assert metrics_data == [
-        {
-            'dataset_id': 'id1',
-            'visit': 1
-        }, {
-            'dataset_id': 'id2',
-            'visit': 2
-        }, {
-            'dataset_id': 'id3',
-            'visit': 3
-        }
+        { 'id': 1 },
+        { 'id': 2 },
+        { 'id': 3 },
     ]
 
 def test_update_datasets_metrics(app, rmock):
