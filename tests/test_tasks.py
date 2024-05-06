@@ -25,52 +25,25 @@ def test_iterate_on_metrics(app, rmock):
         { 'id': 3 },
     ]
 
-def test_update_datasets_metrics(app, rmock):
-    datasets = [DatasetFactory() for i in range(15)]
-    mock_metrics_api(app, rmock, "datasets", "visit", [
-        { 'dataset_id': str(datasets[1].id), 'visit': 42 },
-        { 'dataset_id': str(datasets[3].id), 'visit': 1337 },
-        { 'dataset_id': str(datasets[4].id), 'visit': 2 },
+@pytest.mark.parametrize('endpoint,id_key,factory,func', [
+    ("datasets", "dataset_id", DatasetFactory, update_datasets),
+    ("reuses", "reuse_id", ReuseFactory, update_reuses),
+    ("organizations", "organization_id", OrganizationFactory, update_organizations)
+])
+def test_update_simple_visit_to_views_metrics(app, rmock, endpoint, id_key, factory, func):
+    models = [factory() for i in range(15)]
+    mock_metrics_api(app, rmock, endpoint, "visit", [
+        { id_key: str(models[1].id), 'visit': 42 },
+        { id_key: str(models[3].id), 'visit': 1337 },
+        { id_key: str(models[4].id), 'visit': 2 },
     ])
 
-    update_datasets()
-    [dataset.reload() for dataset in datasets]
+    func()
+    [model.reload() for model in models]
 
-    assert datasets[1].metrics.get('views') == 42
-    assert datasets[3].metrics.get('views') == 1337
-    assert datasets[4].metrics.get('views') == 2
-
-
-def test_update_reuses_metrics(app, rmock):
-    reuses = [ReuseFactory() for i in range(15)]
-    mock_metrics_api(app, rmock, "reuses", "visit", [
-        { 'reuse_id': str(reuses[1].id), 'visit': 42 },
-        { 'reuse_id': str(reuses[3].id), 'visit': 1337 },
-        { 'reuse_id': str(reuses[4].id), 'visit': 2 },
-    ])
-
-    update_reuses()
-    [reuse.reload() for reuse in reuses]
-
-    assert reuses[1].metrics.get('views') == 42
-    assert reuses[3].metrics.get('views') == 1337
-    assert reuses[4].metrics.get('views') == 2
-
-def test_update_organizations_metrics(app, rmock):
-    organizations = [OrganizationFactory() for i in range(15)]
-    mock_metrics_api(app, rmock, "organizations", "visit", [
-        { 'organization_id': str(organizations[1].id), 'visit': 42 },
-        { 'organization_id': str(organizations[3].id), 'visit': 1337 },
-        { 'organization_id': str(organizations[4].id), 'visit': 2 },
-    ])
-
-    update_organizations()
-    [organization.reload() for organization in organizations]
-
-    assert organizations[1].metrics.get('views') == 42
-    assert organizations[3].metrics.get('views') == 1337
-    assert organizations[4].metrics.get('views') == 2
-
+    assert models[1].metrics.get('views') == 42
+    assert models[3].metrics.get('views') == 1337
+    assert models[4].metrics.get('views') == 2
 
 def test_update_resources_metrics(app, rmock):
     resources = [ResourceFactory() for i in range(5)]
