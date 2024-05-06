@@ -1,6 +1,18 @@
 from datetime import datetime, timedelta
 
 
+def mock_metrics_api(app, rmock, endpoint, value_key, values):
+    url = f'{app.config["METRICS_API"]}/{endpoint}_total/data/?{value_key}__greater=1&page_size=50'
+    rmock.get(url, json={
+        'data': values,
+        'links': {
+            'next': None
+        },
+        'meta': {
+            'total': len(values)
+        }
+    })
+
 def mock_metrics_payload(app, rmock, target, value_key, data, url=None, next=None, total=10):
     if not url:
         url = f'{app.config["METRICS_API"]}/{target}_total/data/?{value_key}__greater=1'

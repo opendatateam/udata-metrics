@@ -6,9 +6,9 @@ from udata.core.reuse.factories import ReuseFactory
 from udata.models import Dataset, Organization, Resource, Reuse
 
 from udata_metrics.tasks import (
-    iterate_on_metrics, process_metrics_result
+    iterate_on_metrics, update_datasets, update_organizations, update_resources_and_community_resources, update_reuses
 )
-from .helpers import mock_metrics_payload
+from .helpers import mock_metrics_api, mock_metrics_payload
 
 
 def test_iterate_on_metrics(app, rmock):
@@ -37,54 +37,89 @@ def test_iterate_on_metrics(app, rmock):
         }
     ]
 
+def test_update_datasets_metrics(app, rmock):
+    datasets = [DatasetFactory() for i in range(15)]
+    mock_metrics_api(app, rmock, "datasets", "visit", [
+        { 'dataset_id': str(datasets[1].id), 'visit': 42 },
+        { 'dataset_id': str(datasets[3].id), 'visit': 1337 },
+        { 'dataset_id': str(datasets[4].id), 'visit': 2 },
+    ])
 
-@pytest.mark.parametrize('target,value_key,model,factory', [
-    ('dataset', 'visit', Dataset, DatasetFactory),
-    ('reuse', 'visit', Reuse, ReuseFactory),
-    ('organization', 'visit_dataset', Organization, OrganizationFactory)
-])
-def test_process_metrics_result_generic(app, rmock, target, value_key, model, factory):
-    '''
-    Test process_metrics_result for generic models : Dataset, Reuse and Organization.
-    Objects should be updated with metrics views accordingly.
-    '''
-    model_objects = [factory() for i in range(10)]
-    mock_metrics_payload(app, rmock, target, value_key,
-                         data=[(str(obj.id), i) for i, obj in enumerate(model_objects)])
-    process_metrics_result(target, model, f'{target}_id', value_key)
+    update_datasets()
+    [dataset.reload() for dataset in datasets]
 
-    [obj.reload() for obj in model_objects]
-    assert [obj.metrics.get('views', 0) for obj in model_objects] == list(range(len(model_objects)))
+    assert datasets[1].metrics.get('views') == 42
+    assert datasets[3].metrics.get('views') == 1337
+    assert datasets[4].metrics.get('views') == 2
 
 
-def test_process_metrics_result_resource(app, rmock):
-    '''
-    Test process_metrics_result for embedded resource objects.
-    Embedded resources should be updated with metrics views accordingly.
-    '''
-    target = 'resource'
-    value_key = 'download_resource'
-    resources = [ResourceFactory() for i in range(10)]
-    dataset = DatasetFactory(resources=resources)
-    mock_metrics_payload(app, rmock, target, value_key,
-                         data=[(str(obj.id), i) for i, obj in enumerate(resources)])
-    process_metrics_result(target, Resource, f'{target}_id', value_key)
+def test_update_reuses_metrics(app, rmock):
+    reuses = [ReuseFactory() for i in range(15)]
+    mock_metrics_api(app, rmock, "reuses", "visit", [
+        { 'reuse_id': str(reuses[1].id), 'visit': 42 },
+        { 'reuse_id': str(reuses[3].id), 'visit': 1337 },
+        { 'reuse_id': str(reuses[4].id), 'visit': 2 },
+    ])
 
-    dataset.reload()
-    assert [res.metrics.get('views', 0) for res in dataset.resources] == list(range(len(resources)))
+    update_reuses()
+    [reuse.reload() for reuse in reuses]
+
+    assert reuses[1].metrics.get('views') == 42
+    assert reuses[3].metrics.get('views') == 1337
+    assert reuses[4].metrics.get('views') == 2
+
+def test_update_organizations_metrics(app, rmock):
+    organizations = [OrganizationFactory() for i in range(15)]
+    mock_metrics_api(app, rmock, "organizations", "visit", [
+        { 'organization_id': str(organizations[1].id), 'visit': 42 },
+        { 'organization_id': str(organizations[3].id), 'visit': 1337 },
+        { 'organization_id': str(organizations[4].id), 'visit': 2 },
+    ])
+
+    update_organizations()
+    [organization.reload() for organization in organizations]
+
+    assert organizations[1].metrics.get('views') == 42
+    assert organizations[3].metrics.get('views') == 1337
+    assert organizations[4].metrics.get('views') == 2
 
 
-def test_process_metrics_result_community_resource(app, rmock):
-    '''
-    Test process_metrics_result for community resource objects.
-    Since no embedded resource should be find by id, community objects should be updated.
-    '''
-    target = 'resource'
-    value_key = 'download_resource'
-    resources = [CommunityResourceFactory() for i in range(10)]
-    mock_metrics_payload(app, rmock, target, value_key,
-                         data=[(str(obj.id), i) for i, obj in enumerate(resources)])
-    process_metrics_result(target, Resource, f'{target}_id', value_key)
+def test_update_resources_metrics(app, rmock):
+    resources = [ResourceFactory() for i in range(5)]
+    dataset_a_with_resources = DatasetFactory(resources=resources)
+    dataset_b_with_resource = DatasetFactory(resources=[ResourceFactory()])
 
-    [resource.reload() for resource in resources]
-    assert [res.metrics.get('views', 0) for res in resources] == list(range(len(resources)))
+    community_resources = [CommunityResourceFactory() for i in range(10)]
+
+    dataset_without_resource = DatasetFactory()
+
+    mock_metrics_api(app, rmock, "resources", "download_resource", [
+        { 'resource_id': str(dataset_a_with_resources.resources[0].id), 'dataset_id': str(dataset_a_with_resources.id), 'download_resource': 42 },
+        { 'resource_id': str(community_resources[3].id), 'dataset_id': None, 'download_resource': 16 },
+        { 'resource_id': str(community_resources[5].id), 'dataset_id': None, 'download_resource': 111 },
+        { 'resource_id': str(dataset_a_with_resources.resources[1].id), 'dataset_id': str(dataset_a_with_resources.id), 'download_resource': 1337 },
+        { 'resource_id': str(dataset_b_with_resource.resources[0].id), 'dataset_id': str(dataset_b_with_resource.id), 'download_resource': 1404 },
+        { 'resource_id': str(dataset_a_with_resources.resources[4].id), 'dataset_id': str(dataset_a_with_resources.id), 'download_resource': 2 },
+        { 'resource_id': str(community_resources[9].id), 'dataset_id': None, 'download_resource': 1 },
+    ])
+
+    update_resources_and_community_resources()
+
+    dataset_a_with_resources.reload()
+    dataset_b_with_resource.reload()
+    dataset_without_resource.reload()
+    [community_resource.reload() for community_resource in community_resources]
+
+    assert community_resources[3].metrics.get('views') == 16
+    assert community_resources[5].metrics.get('views') == 111
+    assert community_resources[9].metrics.get('views') == 1
+
+    assert dataset_a_with_resources.resources[0].metrics.get('views') == 42
+    assert dataset_a_with_resources.resources[1].metrics.get('views') == 1337
+    assert dataset_a_with_resources.resources[4].metrics.get('views') == 2
+    assert dataset_a_with_resources.metrics.get('number_of_resources_downloads') == 42 + 1337 + 2
+
+    assert dataset_b_with_resource.resources[0].metrics.get('views') == 1404
+    assert dataset_b_with_resource.metrics.get('number_of_resources_downloads') == 1404
+
+    assert dataset_without_resource.metrics.get('number_of_resources_downloads') is None
