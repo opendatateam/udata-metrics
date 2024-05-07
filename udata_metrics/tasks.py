@@ -85,11 +85,13 @@ def update_reuses():
 @log_timing
 def update_organizations():
     # We're currently using visit_dataset as global metric for an orga
-    for data in iterate_on_metrics("organizations", "visit"):
-        save_model(Organization, data['organization_id'], 'views', data['visit'])
+    for data in iterate_on_metrics("organizations", "visit_dataset"):
+        save_model(Organization, data['organization_id'], 'views', data['visit_dataset'])
 
 
 def update_metrics_for_models():
+    log.info(f"Starting…")
+    print('toto')
     update_datasets()
     update_resources_and_community_resources()
     update_reuses()

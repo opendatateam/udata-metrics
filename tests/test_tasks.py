@@ -25,17 +25,17 @@ def test_iterate_on_metrics(app, rmock):
         { 'id': 3 },
     ]
 
-@pytest.mark.parametrize('endpoint,id_key,factory,func', [
-    ("datasets", "dataset_id", DatasetFactory, update_datasets),
-    ("reuses", "reuse_id", ReuseFactory, update_reuses),
-    ("organizations", "organization_id", OrganizationFactory, update_organizations)
+@pytest.mark.parametrize('endpoint,id_key,factory,func,api_key', [
+    ("datasets", "dataset_id", DatasetFactory, update_datasets, 'visit'),
+    ("reuses", "reuse_id", ReuseFactory, update_reuses, 'visit'),
+    ("organizations", "organization_id", OrganizationFactory, update_organizations, 'visit_dataset')
 ])
-def test_update_simple_visit_to_views_metrics(app, rmock, endpoint, id_key, factory, func):
+def test_update_simple_visit_to_views_metrics(app, rmock, endpoint, id_key, factory, func, api_key):
     models = [factory() for i in range(15)]
-    mock_metrics_api(app, rmock, endpoint, "visit", [
-        { id_key: str(models[1].id), 'visit': 42 },
-        { id_key: str(models[3].id), 'visit': 1337 },
-        { id_key: str(models[4].id), 'visit': 2 },
+    mock_metrics_api(app, rmock, endpoint, api_key, [
+        { id_key: str(models[1].id), api_key: 42 },
+        { id_key: str(models[3].id), api_key: 1337 },
+        { id_key: str(models[4].id), api_key: 2 },
     ])
 
     func()
