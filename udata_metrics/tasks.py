@@ -44,7 +44,7 @@ def iterate_on_metrics(target: str, value_keys: List[str], page_size: int = 50) 
     '''
     Yield all elements with not zero values for the keys inside `value_keys`.
     If you pass ['visit', 'download_resource'], it will do a `OR` and get
-    metrics with one of the two values not zero. 
+    metrics with one of the two values not zero.
     '''
     yielded = set()
 
@@ -57,7 +57,7 @@ def iterate_on_metrics(target: str, value_keys: List[str], page_size: int = 50) 
                 r = session.get(url, timeout=10)
                 r.raise_for_status()
                 data = r.json()
-                
+
                 for row in data['data']:
                     if row['__id'] not in yielded:
                         yielded.add(row['__id'])
