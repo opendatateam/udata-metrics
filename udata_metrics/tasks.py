@@ -19,7 +19,7 @@ def log_timing(func):
         # Better log if we're using Python 3.9
         name = func.__name__
         model = name.removeprefix('update_') if hasattr(name, 'removeprefix') else name
-        
+
         log.info(f"Processing {model}…")
         start_time = time.perf_counter()
         result = func(*args, **kwargs)
