@@ -1,5 +1,5 @@
 import logging
-from typing import List
+from typing import Dict, List
 import requests
 from functools import wraps
 import time
@@ -26,7 +26,7 @@ def log_timing(func):
     return timeit_wrapper
 
 
-def save_model(model: db.Document, model_id: str, metrics: dict[str, int]) -> None:
+def save_model(model: db.Document, model_id: str, metrics: Dict[str, int]) -> None:
     try:
         result = model.objects(id=model_id).update(**{
             f'set__metrics__{key}': value for key, value in metrics.items()
