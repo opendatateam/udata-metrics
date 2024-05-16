@@ -1,8 +1,7 @@
 from datetime import datetime, timedelta
 
 def chunks(xs, n):
-    n = max(1, n)
-    return (xs[i:i+n] for i in range(0, len(xs), n))
+    return [xs[i:i+n] for i in range(0, len(xs), n)]
 
 def mock_metrics_api(app, rmock, endpoint, value_key, values, page_size: int = 50):
     chunked = list(chunks(values, page_size))
