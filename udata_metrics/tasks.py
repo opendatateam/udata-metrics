@@ -91,7 +91,6 @@ def update_organizations():
 
 def update_metrics_for_models():
     log.info(f"Starting…")
-    print('toto')
     update_datasets()
     update_resources_and_community_resources()
     update_reuses()
