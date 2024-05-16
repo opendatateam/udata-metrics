@@ -1,4 +1,3 @@
-from datetime import datetime
 import logging
 from typing import List
 import requests
@@ -7,11 +6,12 @@ import time
 
 from flask import current_app
 
-from udata.models import db, CommunityResource, Dataset, Resource, Reuse, Organization
+from udata.models import db, CommunityResource, Dataset, Reuse, Organization
 from udata.tasks import job
 
 
 log = logging.getLogger(__name__)
+
 
 def log_timing(func):
     @wraps(func)
@@ -25,9 +25,12 @@ def log_timing(func):
         return result
     return timeit_wrapper
 
+
 def save_model(model: db.Document, model_id: str, metrics: dict[str, int]) -> None:
     try:
-        result = model.objects(id=model_id).update(**{f'set__metrics__{key}': value for key, value in metrics.items()})
+        result = model.objects(id=model_id).update(**{
+            f'set__metrics__{key}': value for key, value in metrics.items()
+        })
 
         if result is None:
             log.debug(f'{model.__name__} not found', extra={
@@ -40,7 +43,8 @@ def save_model(model: db.Document, model_id: str, metrics: dict[str, int]) -> No
 def iterate_on_metrics(target: str, value_keys: List[str], page_size: int = 50) -> dict:
     '''
     Yield all elements with not zero values for the keys inside `value_keys`.
-    If you pass ['visit', 'download_resource'], it will do a `OR` and get metrics with one of the two values not zero. 
+    If you pass ['visit', 'download_resource'], it will do a `OR` and get
+    metrics with one of the two values not zero. 
     '''
     yielded = set()
 
@@ -61,6 +65,7 @@ def iterate_on_metrics(target: str, value_keys: List[str], page_size: int = 50) 
 
                 url = data['links'].get('next')
 
+
 @log_timing
 def update_resources_and_community_resources():
     for data in iterate_on_metrics("resources", ["download_resource"]):
@@ -73,6 +78,7 @@ def update_resources_and_community_resources():
                 **{f'set__resources__$__metrics__views': data['download_resource']}
             )
 
+
 @log_timing
 def update_datasets():
     for data in iterate_on_metrics("datasets", ["visit", "download_resource"]):
@@ -81,12 +87,14 @@ def update_datasets():
             'resources_downloads': data['download_resource'],
         })
 
+
 @log_timing
 def update_reuses():
     for data in iterate_on_metrics("reuses", ["visit"]):
         save_model(Reuse, data['reuse_id'], {
             'views': data['visit']
         })
+
 
 @log_timing
 def update_organizations():
