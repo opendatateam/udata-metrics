@@ -17,7 +17,9 @@ def log_timing(func):
     @wraps(func)
     def timeit_wrapper(*args, **kwargs):
         # Better log if we're using Python 3.9
-        model = func.__name__.removeprefix('update_') if hasattr(func.__name__, 'removeprefix') else func.__name__
+        name = func.__name__
+        model = name.removeprefix('update_') if hasattr(name, 'removeprefix') else name
+        
         log.info(f"Processing {model}…")
         start_time = time.perf_counter()
         result = func(*args, **kwargs)
