@@ -70,7 +70,7 @@ def update_resources_and_community_resources():
             )
 
     for dataset_id, sum in sum_of_resources_downloads.items():
-        save_model(Dataset, dataset_id, 'number_of_resources_downloads', sum)
+        save_model(Dataset, dataset_id, 'resources_downloads', sum)
 
 @log_timing
 def update_datasets():

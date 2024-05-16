@@ -78,9 +78,9 @@ def test_update_resources_metrics(app, rmock):
     assert dataset_a_with_resources.resources[0].metrics.get('views') == 42
     assert dataset_a_with_resources.resources[1].metrics.get('views') == 1337
     assert dataset_a_with_resources.resources[4].metrics.get('views') == 2
-    assert dataset_a_with_resources.metrics.get('number_of_resources_downloads') == 42 + 1337 + 2
+    assert dataset_a_with_resources.metrics.get('resources_downloads') == 42 + 1337 + 2
 
     assert dataset_b_with_resource.resources[0].metrics.get('views') == 1404
-    assert dataset_b_with_resource.metrics.get('number_of_resources_downloads') == 1404
+    assert dataset_b_with_resource.metrics.get('resources_downloads') == 1404
 
-    assert dataset_without_resource.metrics.get('number_of_resources_downloads') is None
+    assert dataset_without_resource.metrics.get('resources_downloads') is None
