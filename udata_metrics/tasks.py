@@ -1,88 +1,119 @@
-from datetime import datetime
 import logging
+from typing import Dict, List
 import requests
+from functools import wraps
+import time
 
 from flask import current_app
 
-from udata.models import db, CommunityResource, Dataset, Resource, Reuse, Organization
+from udata.models import db, CommunityResource, Dataset, Reuse, Organization
 from udata.tasks import job
 
 
 log = logging.getLogger(__name__)
 
 
-def save_model(model: db.Document, model_id: str, value: int) -> None:
-    model_result = model.objects.filter(id=model_id).first()
-    if not model_result:
-        log.debug(f'{model.__name__} not found', extra={
-            'id': model_id
-        })
-        return
-    if model_result.metrics.get('views', 0) == value:
-        # Metric hasn't changed, skip update (useful for objects that are slow when saving)
-        return
-    model_result.metrics['views'] = value
+def log_timing(func):
+    @wraps(func)
+    def timeit_wrapper(*args, **kwargs):
+        # Better log if we're using Python 3.9
+        name = func.__name__
+        model = name.removeprefix('update_') if hasattr(name, 'removeprefix') else name
+
+        log.info(f"Processing {model}…")
+        start_time = time.perf_counter()
+        result = func(*args, **kwargs)
+        total_time = time.perf_counter() - start_time
+        log.info(f'Done in {total_time:.4f} seconds.')
+        return result
+    return timeit_wrapper
+
+
+def save_model(model: db.Document, model_id: str, metrics: Dict[str, int]) -> None:
     try:
-        model_result.save(signal_kwargs={'ignores': ['post_save']})
+        result = model.objects(id=model_id).update(**{
+            f'set__metrics__{key}': value for key, value in metrics.items()
+        })
+
+        if result is None:
+            log.debug(f'{model.__name__} not found', extra={
+                'id': model_id
+            })
     except Exception as e:
         log.exception(e)
 
 
-def iterate_on_metrics(target: str, value_key: str) -> dict:
+def iterate_on_metrics(target: str, value_keys: List[str], page_size: int = 50) -> dict:
     '''
-    paginate on target endpoint
+    Yield all elements with not zero values for the keys inside `value_keys`.
+    If you pass ['visit', 'download_resource'], it will do a `OR` and get
+    metrics with one of the two values not zero.
     '''
-    with requests.Session() as session:
+    yielded = set()
+
+    for value_key in value_keys:
         url = f'{current_app.config["METRICS_API"]}/{target}_total/data/'
-        url += f'?{value_key}__greater=1&page_size=50'
-        r = session.get(url, timeout=10)
-        r.raise_for_status()
-        data = r.json()
-        log.info(f'{data["meta"]["total"]} objects found')
-        for row in data['data']:
-            yield row
-        while data['links'].get('next'):
-            r = session.get(data['links'].get('next'), timeout=15)
-            r.raise_for_status()
-            data = r.json()
-            for row in data['data']:
-                yield row
+        url += f'?{value_key}__greater=1&page_size={page_size}'
+
+        with requests.Session() as session:
+            while url is not None:
+                r = session.get(url, timeout=10)
+                r.raise_for_status()
+                data = r.json()
+
+                for row in data['data']:
+                    if row['__id'] not in yielded:
+                        yielded.add(row['__id'])
+                        yield row
+
+                url = data['links'].get('next')
 
 
-def process_metrics_result(target_endpoint: str,
-                           model: db.Document,
-                           id_key: str,
-                           value_key: str = 'visit') -> None:
-    '''
-    Fetch metrics and update udata objects with the total metrics count
-    '''
-    log.info(f'Processing model {model}')
-    start = datetime.now()
-    for data in iterate_on_metrics(target_endpoint, value_key):
-        if model.__name__ == 'Resource':
-            # Specific case for resource:
-            # - it could either be a Dataset Resource embedded document or a CommunityResource
-            # - it requires special performance improvement to prevent saving the entire document
-            modified_count = Dataset.objects(resources__id=data[id_key]).update(
-                **{'set__resources__$__metrics__views': data[value_key]}
-            )
-            if not modified_count:
-                # No embedded resource found with this id, could be a CommunityResource
-                save_model(CommunityResource, model_id=data[id_key], value=data[value_key])
+@log_timing
+def update_resources_and_community_resources():
+    for data in iterate_on_metrics("resources", ["download_resource"]):
+        if data['dataset_id'] is None:
+            save_model(CommunityResource, data['resource_id'], {
+                'views': data['download_resource'],
+            })
         else:
-            save_model(model, model_id=data[id_key], value=data[value_key])
-    log.info(f'Done in {datetime.now() - start}')
+            Dataset.objects(resources__id=data['resource_id']).update(
+                **{f'set__resources__$__metrics__views': data['download_resource']}
+            )
+
+
+@log_timing
+def update_datasets():
+    for data in iterate_on_metrics("datasets", ["visit", "download_resource"]):
+        save_model(Dataset, data['dataset_id'], {
+            'views': data['visit'],
+            'resources_downloads': data['download_resource'],
+        })
+
+
+@log_timing
+def update_reuses():
+    for data in iterate_on_metrics("reuses", ["visit"]):
+        save_model(Reuse, data['reuse_id'], {
+            'views': data['visit']
+        })
+
+
+@log_timing
+def update_organizations():
+    # We're currently using visit_dataset as global metric for an orga
+    for data in iterate_on_metrics("organizations", ["visit_dataset"]):
+        save_model(Organization, data['organization_id'], {
+            'views': data['visit_dataset'],
+        })
 
 
 def update_metrics_for_models():
-    for target, model, id_key, value_key in [
-        ('datasets', Dataset, 'dataset_id', 'visit'),
-        ('resources', Resource, 'resource_id', 'download_resource'),
-        ('reuses', Reuse, 'reuse_id', 'visit'),
-        # We're currently using visit_dataset as global metric for an orga
-        ('organizations', Organization, 'organization_id', 'visit_dataset')
-    ]:
-        process_metrics_result(target, model, id_key, value_key)
+    log.info(f"Starting…")
+    update_datasets()
+    update_resources_and_community_resources()
+    update_reuses()
+    update_organizations()
 
 
 @job('update-metrics', route='low.metrics')
