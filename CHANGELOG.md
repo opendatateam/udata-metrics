@@ -1,6 +1,6 @@
 # Changelog
 
-## Current (in progress)
+## 2.0.3 (2024-05-28)
 
 - Migrate to Python 3.11 following `udata` dependencies upgrade [#14](https://github.com/opendatateam/udata-metrics/pull/14)
 - Add `resources_downloads` to datasets metrics and refactor `update_metrics_for_models` task [#15](https://github.com/opendatateam/udata-metrics/pull/15)
