@@ -1,5 +1,9 @@
 # Changelog
 
+## Current (in progress)
+
+- Nothing yet
+
 ## 2.0.3 (2024-05-28)
 
 - Migrate to Python 3.11 following `udata` dependencies upgrade [#14](https://github.com/opendatateam/udata-metrics/pull/14)
