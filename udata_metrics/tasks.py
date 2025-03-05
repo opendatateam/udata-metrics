@@ -6,6 +6,7 @@ import time
 
 from flask import current_app
 
+from udata.core.dataservices.models import Dataservice
 from udata.models import db, CommunityResource, Dataset, Reuse, Organization
 from udata.tasks import job
 
@@ -92,6 +93,14 @@ def update_datasets():
 
 
 @log_timing
+def update_dataservices():
+    for data in iterate_on_metrics("dataservices", ["visit"]):
+        save_model(Dataservice, data['dataservice_id'], {
+            'views': data['visit'],
+        })
+
+
+@log_timing
 def update_reuses():
     for data in iterate_on_metrics("reuses", ["visit"]):
         save_model(Reuse, data['reuse_id'], {
@@ -109,9 +118,10 @@ def update_organizations():
 
 
 def update_metrics_for_models():
-    log.info(f"Starting…")
+    log.info("Starting…")
     update_datasets()
     update_resources_and_community_resources()
+    update_dataservices()
     update_reuses()
     update_organizations()
 
