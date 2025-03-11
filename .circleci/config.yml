@@ -1,10 +1,19 @@
 ---
-version: 2
+version: 2.1
+
+parameters:
+  python-version:
+    type: string
+    default: "3.11"
+  publish-branch:
+    type: string
+    default: "master"
+    description: "Branch to publish to PyPi and trigger the Gitlab CI/CD pipeline when pushed to"
 
 jobs:
   build:
     docker:
-      - image: udata/circleci:2-alpine
+      - image: udata/circleci:py<< pipeline.parameters.python-version >>
       - image: mongo:6.0.4
       - image: redis:alpine
     environment:
@@ -98,7 +107,7 @@ workflows:
           filters:
             branches:
               only:
-                - master
+                - << pipeline.parameters.publish-branch >>
                 - /[0-9]+(\.[0-9]+)+/
             tags:
               only: /v[0-9]+(\.[0-9]+)*/

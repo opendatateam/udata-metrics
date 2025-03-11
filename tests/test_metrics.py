@@ -1,6 +1,8 @@
 from datetime import datetime, timedelta
 import pytest
 
+from udata.core.dataservices.factories import DataserviceFactory
+from udata.core.dataservices.models import Dataservice
 from udata.core.dataset.factories import DatasetFactory
 from udata.core.organization.factories import OrganizationFactory
 from udata.core.reuse.factories import ReuseFactory
@@ -14,6 +16,7 @@ from .helpers import mock_monthly_metrics_payload
 
 @pytest.mark.parametrize('target,value_keys', [
     ('dataset', ['visit', 'download_resource']),
+    ('dataservice', ['visit']),
     ('reuse', ['visit']),
     ('organization', ['visit_dataset', 'download_resource', 'visit_reuse'])
 ])
@@ -41,6 +44,7 @@ def test_get_metrics_for_site(app, rmock):
 
 @pytest.mark.parametrize('model,factory,date_label', [
     (Dataset, DatasetFactory, 'created_at_internal'),
+    (Dataservice, DataserviceFactory, 'created_at'),
     (Reuse, ReuseFactory, 'created_at'),
     (Organization, OrganizationFactory, 'created_at')
 ])

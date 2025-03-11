@@ -1,11 +1,12 @@
 import pytest
 
+from udata.core.dataservices.factories import DataserviceFactory
 from udata.core.dataset.factories import CommunityResourceFactory, DatasetFactory, ResourceFactory
 from udata.core.organization.factories import OrganizationFactory
 from udata.core.reuse.factories import ReuseFactory
 
 from udata_metrics.tasks import (
-    iterate_on_metrics, update_datasets, update_organizations, update_resources_and_community_resources, update_reuses
+    iterate_on_metrics, update_dataservices, update_datasets, update_organizations, update_resources_and_community_resources, update_reuses
 )
 from .helpers import mock_metrics_api
 
@@ -26,6 +27,7 @@ def test_iterate_on_metrics(app, rmock):
     ]
 
 @pytest.mark.parametrize('endpoint,id_key,factory,func,api_key', [
+    ("dataservices", "dataservice_id", DataserviceFactory, update_dataservices, 'visit'),
     ("reuses", "reuse_id", ReuseFactory, update_reuses, 'visit'),
     ("organizations", "organization_id", OrganizationFactory, update_organizations, 'visit_dataset')
 ])

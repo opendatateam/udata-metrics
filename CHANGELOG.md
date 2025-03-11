@@ -2,7 +2,7 @@
 
 ## Current (in progress)
 
-- Nothing yet
+- Compute dataservices metrics in update-metrics job [#16](https://github.com/opendatateam/udata-metrics/pull/16)
 
 ## 2.0.3 (2024-05-28)
 
