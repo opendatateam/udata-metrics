@@ -98,7 +98,7 @@ def qa(ctx):
         exit(flake8_results.return_code or readme_results.return_code)
     success('Quality check OK')
 
-
+@task
 def dist(ctx, buildno=None):
     '''Package for distribution'''
     header('Building a distribuable package')
