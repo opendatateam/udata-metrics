@@ -1,11 +1,6 @@
 # udata-metrics
 
-This plugin adds views to display metrics on datasets, reuses, organizations and site dashboard pages.
-It uses hook logic based on udata-front hooks.
-We feed these views with data from:
-    * an optional metrics API for traffic (views, download, external links)
-    * mongo for stock values (with an aggregation pipeline)
-A job can be scheduled to inject traffic metrics in udata's objects metrics.
+A job is scheduled to inject traffic metrics in udata's objects metrics.
 
 ## Installation
 

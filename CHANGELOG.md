@@ -2,7 +2,7 @@
 
 ## Current (in progress)
 
-- Nothing yet
+- Remove views and translations and dependency to udata-front [#17](https://github.com/opendatateam/udata-metrics/pull/17)
 
 ## 2.0.4 (2025-03-14)
 
