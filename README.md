@@ -1,3 +1,5 @@
+**Note: This project is not maintained anymore. The metrics tasks integration have been integrated in udata directly (https://github.com/opendatateam/udata/pull/3386).**
+
 # udata-metrics
 
 This plugin adds views to display metrics on datasets, reuses, organizations and site dashboard pages.
